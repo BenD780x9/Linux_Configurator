@@ -105,11 +105,7 @@ def drivers():
 
 def install_gpu():
 
-    if "intel" in gpu:
-        GPU = "Intel"
-    elif "amd" in gpu:
-        GPU = "AMD"
-    elif "nvidia" in gpu:
+    if GPU == "Nvidia":
         os.system("modinfo -F version nvidia")
         os.system("sudo dnf install -y akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
         os.system("sudo dnf install -y xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
@@ -117,6 +113,11 @@ def install_gpu():
         os.system("sudo dnf install -y vdpauinfo libva-vdpau-driver libva-utils")
         os.system("sudo dnf install -y vulkan")
         os.system("modinfo -F version nvidia")
+
+    #if GPU = "Intel": Disable for now until we have installation process
+        
+    #elif GPU = "AMD": Disable for now until we have installation process
+        
 
  
 def install_dropbox():
