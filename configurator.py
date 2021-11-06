@@ -145,7 +145,7 @@ def install_chrome():
     os.system("sudo dnf config-manager --set-enabled google-chrome")
     os.system("sudo dnf install -y google-chrome-stable")
            
-def install_cromium():    
+def install_chromium():    
     os.system("sudo dnf install -y chromium")
 
 ### APP ###
