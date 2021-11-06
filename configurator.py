@@ -76,7 +76,7 @@ def drivers():
         os.system("sudo ln -s /var/lib/snapd/snap /snap") # "sudo snap refresh" AFTER REBOOT # for classic snap support
         os.system("sudo dnf copr enable kwizart/fedy")
         os.system("sudo dnf install fedy -y")
-        os.ststem("flatpak install -y flatseal")
+        os.system("flatpak install -y flatseal")
         
         # Install Codecs and VLC.
         print("Install Codecs and VLC")
