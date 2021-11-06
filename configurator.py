@@ -166,14 +166,6 @@ cb_skype = QCheckBox('Install Skype')
 cb_zoom = QCheckBox('Install Zoom')
 cb_chrome = QCheckBox('Install Chrome')
 cb_chromium = QCheckBox('Install Chromium')
-
-
-if "intel" in gpu:
-    gpu = QCheckBox('Install Intel drivers')
-elif "amd" in gpu:
-    gpu = QCheckBox('Install AMD drivers')
-elif "nvidia" in gpu:
-    gpu = QCheckBox('Install Nvidia drivers')
     
 drivers.setChecked(True)
 
