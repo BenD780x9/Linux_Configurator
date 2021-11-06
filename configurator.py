@@ -113,11 +113,16 @@ def install_gpu():
         os.system("sudo dnf install -y vdpauinfo libva-vdpau-driver libva-utils")
         os.system("sudo dnf install -y vulkan")
         os.system("modinfo -F version nvidia")
+    
+    #elif GPU == "AMD": # Disable for now until we have installation process
+        #os.system("xorg-x11-drv-amdgpu.x86_64")
+        
+        # Add file to X11 config, *NEED TO TEST IT BEFORE!
+        #os.system('Section "Device"\n\tIdentifier "AMD"\n\tDriver "amdgpu"\nEndSection" > /etc/X11/xorg.conf.d/20-amdgpu.conf') 
 
-    #if GPU == "Intel": Disable for now until we have installation process
-        
-    #elif GPU == "AMD": Disable for now until we have installation process
-        
+    #elif GPU == "Intel": Disable for now until we have installation process    
+
+
 
  
 def install_dropbox():
