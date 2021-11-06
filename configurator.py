@@ -2,16 +2,8 @@ import sh
 import os
 import subprocess
 import sys
-from pathlib import Path
-import sys
 import time
-import sh
-import os
-import subprocess
-import sys
 from pathlib import Path
-import sys
-import time
 from PyQt5.QtWidgets import *
 
 
