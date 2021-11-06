@@ -114,9 +114,9 @@ def install_gpu():
         os.system("sudo dnf install -y vulkan")
         os.system("modinfo -F version nvidia")
 
-    #if GPU = "Intel": Disable for now until we have installation process
+    #if GPU == "Intel": Disable for now until we have installation process
         
-    #elif GPU = "AMD": Disable for now until we have installation process
+    #elif GPU == "AMD": Disable for now until we have installation process
         
 
  
