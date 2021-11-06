@@ -167,7 +167,7 @@ cb_zoom = QCheckBox('Install Zoom')
 cb_chrome = QCheckBox('Install Chrome')
 cb_chromium = QCheckBox('Install Chromium')
     
-drivers.setChecked(True)
+cb_drivers.setChecked(True)
 
 # Check what box user check and install it.
 # "checkState" check if box is chacked 0 is NO / 2 is YES
