@@ -35,7 +35,8 @@ elif "amd" in gpu:
     GPU = "AMD"
 elif "nvidia" in gpu:
     GPU = "Nvidia"
-
+else:
+    GPU = "Unknown"
 
 """Determine if the computer is PC or a Laptop"""
 if "No such file or directory" in subprocess.getoutput("ls cat /proc/acpi/button/lid"):
