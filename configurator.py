@@ -51,7 +51,7 @@ if "No such file or directory" in subprocess.getoutput("ls cat /proc/acpi/button
 else:
     PC = "Laptop"    
 
-#print(f"You are runnig a {PC} PC, and Your system is {OS} {DE} with {GPU} GPU.")
+system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
 
 
 
