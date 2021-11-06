@@ -5,4 +5,5 @@
   * Remove unused modules.
   * Add AMD GPU Drivers
   * Add massages that tell the installer progress.
+  * Add pip & python installation scripts based on the host system.
   * 
