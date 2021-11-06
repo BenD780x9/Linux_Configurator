@@ -156,15 +156,15 @@ window.setWindowTitle('Installer')
 window.setGeometry(400, 400, 400, 400)
 layout = QVBoxLayout()
 label = QLabel(f'{system}\n\nChoose what to install')
-drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
-gpucb = QCheckBox(f"Install {GPU} drivers")
-dropbox = QCheckBox('Install Dropbox')
-nextcloud = QCheckBox('Install NextCloud')
-google = QCheckBox('Install Google Cloud')
-skype = QCheckBox('Install Skype')
-zoom = QCheckBox('Install Zoom')
-Chrome = QCheckBox('Install Chrome')
-chromium = QCheckBox('Install Chromium')
+cb_drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
+cb_gpu = QCheckBox(f"Install {GPU} drivers")
+cb_dropbox = QCheckBox('Install Dropbox')
+cb_nextcloud = QCheckBox('Install NextCloud')
+cb_google = QCheckBox('Install Google Cloud')
+cb_skype = QCheckBox('Install Skype')
+cb_zoom = QCheckBox('Install Zoom')
+cb_chrome = QCheckBox('Install Chrome')
+cb_chromium = QCheckBox('Install Chromium')
 
 
 if "intel" in gpu:
@@ -179,14 +179,15 @@ drivers.setChecked(True)
 # Check what box user check and install it.
 # "checkState" check if box is chacked 0 is NO / 2 is YES
 def install():
-    d = {   'drivers': (drivers.checkState()),
-            'dropbox': (dropbox.checkState()),
-            'nextcloud': (nextcloud.checkState()),
-            'google': (google.checkState()),
-            'zoom': (zoom.checkState()),
-            'skype': (skype.checkState()),
-            'chrome': (Chrome.checkState()),
-            'chromium': (chromium.checkState()),
+    d = {   'drivers': (cb_drivers.checkState()),
+            'gpu': (cb_gpu.checkState()),
+            'dropbox': (cb_dropbox.checkState()),
+            'nextcloud': (cb_nextcloud.checkState()),
+            'google': (cb_google.checkState()),
+            'zoom': (cb_zoom.checkState()),
+            'skype': (cb_skype.checkState()),
+            'chrome': (cb_chrome.checkState()),
+            'chromium': (cb_chromium.checkState()),
             }
     
     o = []
@@ -200,15 +201,15 @@ btn.clicked.connect(install)
 
 layout.addWidget(label)
 
-layout.addWidget(drivers)
-layout.addWidget(gpucb)
-layout.addWidget(dropbox)
-layout.addWidget(nextcloud)
-layout.addWidget(google)
-layout.addWidget(zoom)
-layout.addWidget(skype)
-layout.addWidget(Chrome)
-layout.addWidget(chromium)
+layout.addWidget(cb_drivers)
+layout.addWidget(cb_gpu)
+layout.addWidget(cb_dropbox)
+layout.addWidget(cb_nextcloud)
+layout.addWidget(cb_google)
+layout.addWidget(cb_zoom)
+layout.addWidget(cb_skype)
+layout.addWidget(cb_chrome)
+layout.addWidget(cb_chromium)
 
 
 layout.addWidget(btn)
