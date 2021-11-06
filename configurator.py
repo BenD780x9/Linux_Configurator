@@ -103,7 +103,7 @@ def drivers():
         os.system("sudo dnf install tlp tlp-rdw")
         os.system("sudo systemctl enable tlp")
 
-def gpu():
+def gpu_install():
 
     if "intel" in gpu:
         GPU = "Intel"
