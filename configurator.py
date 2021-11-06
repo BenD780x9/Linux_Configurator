@@ -103,7 +103,7 @@ def drivers():
         os.system("sudo dnf install tlp tlp-rdw")
         os.system("sudo systemctl enable tlp")
 
-def gpu_install():
+def install_gpu():
 
     if "intel" in gpu:
         GPU = "Intel"
@@ -119,33 +119,33 @@ def gpu_install():
         os.system("modinfo -F version nvidia")
 
  
-def dropbox():
+def install_dropbox():
     os.system("sudo dnf install -y dropbox nautilus-dropbox")
 
-def nextcloud():
+def install_nextcloud():
     os.system("sudo dnf install -y nextcloud-client nextcloud-client-nautilus")
     os.system("sudo -i")
     os.system("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
     os.system("sysctl -p")
 
-def google():
+def install_google():
     os.system("sudo dnf install -y python3-devel python3-pip python3-inotify python3-gobject cairo-devel cairo-gobject-devel libappindicator-gtk3")
     os.system("sudo python3 -m pip install --upgrade google-api-python-client")
     os.system("sudo python3 -m pip install --upgrade oauth2client")
     os.system("sudo yum install -y overgrive-3.3.*.noarch.rpm")
 
-def skype():
+def install_skype():
     os.system("flatpak install -y skype")
 
-def zoom():    
+def install_zoom():    
     os.system("flatpak install -y zoom")
         
-def chrome():
+def install_chrome():
     os.system("sudo dnf install -y fedora-workstation-repositories")
     os.system("sudo dnf config-manager --set-enabled google-chrome")
     os.system("sudo dnf install -y google-chrome-stable")
            
-def cromium():    
+def install_cromium():    
     os.system("sudo dnf install -y chromium")
 
 ### APP ###
