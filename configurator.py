@@ -11,6 +11,8 @@ HOME = str(Path.home())
 
 """Determine the Distro and Desktop Enviroment"""
 distro = os.popen("cat /etc/*release").read()
+OS = ""
+DE = ""
 if "fedora" in distro:
     OS = "Fedora"
     if "KDE" in distro:
