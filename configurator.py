@@ -38,7 +38,7 @@ else:
     GPU = "Unknown"
 
 """Determine if the computer is PC or a Laptop"""
-if "No such file or directory" in subprocess.getoutput("ls cat /proc/acpi/button/lid"):
+if not os.path.exists("/proc/acpi/button/lid"):
     PC = "Desktop"
 else:
     PC = "Laptop"    
