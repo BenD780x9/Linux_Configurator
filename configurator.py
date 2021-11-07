@@ -1,4 +1,3 @@
-import sh
 import os
 import subprocess
 import sys
