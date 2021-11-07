@@ -49,7 +49,7 @@ system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
 
 def drivers():
     if OS == "Fedora":
-        os.system("sudo dnf upgrade --refresh")
+        os.system("sudo dnf -y upgrade --refresh")
         os.system("sudo dnf check")
         os.system("hostnamectl set-hostname fedora") # By default my machine is called localhost; hence, I rename it for better accessability on the network.
 
@@ -75,7 +75,7 @@ def drivers():
         os.system("sudo dnf install -y snapd")
         os.system("sudo ln -s /var/lib/snapd/snap /snap") # "sudo snap refresh" AFTER REBOOT # for classic snap support
         os.system("sudo dnf copr enable kwizart/fedy")
-        os.system("sudo dnf install fedy -y")
+        os.system("sudo dnf install -y fedy")
         os.system("flatpak install -y flatseal")
         
         # Install Codecs and VLC.
@@ -99,7 +99,7 @@ def drivers():
     elif PC == "Laptop":
 
         # Reduce Battery Usage - TLP.
-        os.system("sudo dnf install tlp tlp-rdw")
+        os.system("sudo dnf install -y tlp tlp-rdw")
         os.system("sudo systemctl enable tlp")
 
 def install_gpu():
@@ -114,9 +114,9 @@ def install_gpu():
         os.system("modinfo -F version nvidia")
     
     #elif GPU == "AMD": # Disable for now until we have installation process
-        #os.system("xorg-x11-drv-amdgpu.x86_64")
+        #os.system("sudo dnf install -y xorg-x11-drv-amdgpu.x86_64")
         
-        # Add file to X11 config, *NEED TO TEST IT BEFORE!
+        # Creats AMD_GPU file to X11 config, *NEED TO TEST IT BEFORE!
         #os.system('Section "Device"\n\tIdentifier "AMD"\n\tDriver "amdgpu"\nEndSection" > /etc/X11/xorg.conf.d/20-amdgpu.conf') 
 
     #elif GPU == "Intel": Disable for now until we have installation process    
