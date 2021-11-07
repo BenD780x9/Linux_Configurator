@@ -5,4 +5,5 @@
   * Add AMD GPU Drivers
   * Add messages that tell the installer progress.
   * Add pip & python installation scripts based on the host system.
+  * Adding Google Drive client for Ubuntu.
   
