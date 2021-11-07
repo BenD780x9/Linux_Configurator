@@ -116,6 +116,7 @@ def drivers():
         os.system("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
         os.system("flatpak install flatseal") # Tool to check or change the permissions of your flatpaks
         os.system("sudo apt install -y nautilus-admin")
+        os.system("sudo apt install -y caffeine") # A little helper in case my laptop needs to stay up all night
         
         # Install Codecs and VLC.
         os.system("sudo apt install -y vlc")
