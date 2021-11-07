@@ -1,6 +1,6 @@
 #!/bin/sh
 
-OS=$(uname -n)
+OS=$(grep ^ID= /etc/*release | cut -d '=' -f 2)
 
 if [  $OS == "fedora" ] ; then
     sudo dnf -y update
