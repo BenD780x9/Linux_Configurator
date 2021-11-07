@@ -88,14 +88,40 @@ def drivers():
         os.system("sudo dnf config-manager --set-enabled fedora-cisco-openh264")
         os.system("sudo dnf install -y gstreamer1-plugin-openh264 mozilla-openh264")  
         
-        # Update disk drivers,
+        # Update disk drivers.
         os.system("sudo fwupdmgr refresh --force")
         if "WARNING:" in subprocess.getoutput('sudo fwupdmgr get-updates'):
             print("true")
             os.system("echo 'DisabledPlugins=test;invalid;uefi' | sudo tee -a /etc/fwupd/daemon.conf") # Remove WARNING: Firmware can not be updated in legacy BIOS mode.
         os.system("sudo fwupdmgr get-updates")
         os.system("sudo fwupdmgr update")
-
+    
+    elif OS == "Ubuntu":
+        
+        # Update system.
+        os.system("sudo apt update")
+        os.system("sudo apt upgrade")
+        os.system("sudo apt dist-upgrade")
+        os.system("sudo apt autoremove")
+        os.system("sudo apt autoclean")
+        
+        # Update disk drivers.
+        os.system("sudo fwupdmgr get-devices")
+        os.system("sudo fwupdmgr get-updates")
+        os.system("sudo fwupdmgr update")
+        # os.system("sudo reboot now") # Nedds to save STATE if enable reboot.
+        
+        # System Utilities.
+        os.system("sudo apt install flatpak")
+        os.system("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
+        os.system("flatpak install flatseal") # Tool to check or change the permissions of your flatpaks
+        os.system("sudo apt install -y nautilus-admin")
+        
+        # Install Codecs and VLC.
+        os.system("sudo apt install -y vlc")
+        os.system("sudo apt install -y libavcodec-extra libdvd-pkg; sudo dpkg-reconfigure libdvd-pkg")
+        
+      
     elif PC == "Laptop":
 
         # Reduce Battery Usage - TLP.
@@ -125,13 +151,22 @@ def install_gpu():
 
  
 def install_dropbox():
-    os.system("sudo dnf install -y dropbox nautilus-dropbox")
+    if OS == "Fedora":
+        os.system("sudo dnf install -y dropbox nautilus-dropbox")
 
+    if OS == "Ubuntu":
+        os.system("sudo apt install -y nautilus-dropbox")
+        
 def install_nextcloud():
-    os.system("sudo dnf install -y nextcloud-client nextcloud-client-nautilus")
-    os.system("sudo -i")
-    os.system("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
-    os.system("sysctl -p")
+    if OS == "Fedora":
+        os.system("sudo dnf install -y nextcloud-client nextcloud-client-nautilus")
+        os.system("sudo -i")
+        os.system("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
+        os.system("sysctl -p")
+        
+     if OS == "Ubuntu":
+        os.system("sudo apt install -y nextcloud-desktop")
+        
 
 def install_google():
     os.system("sudo dnf install -y python3-devel python3-pip python3-inotify python3-gobject cairo-devel cairo-gobject-devel libappindicator-gtk3")
@@ -146,12 +181,21 @@ def install_zoom():
     os.system("flatpak install -y zoom")
         
 def install_chrome():
-    os.system("sudo dnf install -y fedora-workstation-repositories")
-    os.system("sudo dnf config-manager --set-enabled google-chrome")
-    os.system("sudo dnf install -y google-chrome-stable")
-           
-def install_chromium():    
-    os.system("sudo dnf install -y chromium")
+    if OS == "Fedora":
+        os.system("sudo dnf install -y fedora-workstation-repositories")
+        os.system("sudo dnf config-manager --set-enabled google-chrome")
+        os.system("sudo dnf install -y google-chrome-stable")
+        
+    if OS == "Ubuntu":
+        os.system("wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
+        os.system("sudo dpkg -i google-chrome-stable_current_amd64.deb")
+        
+def install_chromium():
+    if OS == "Fedora":
+        os.system("sudo dnf install -y chromium")
+        
+    if OS == "Ubuntu":
+        os.system("sudo apt install -y chromium-browser")
 
 ### APP ###
 
