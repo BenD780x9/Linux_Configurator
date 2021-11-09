@@ -166,11 +166,11 @@ def install_drivers(OS, PC):
     elif OS == "Ubuntu":
         
         # Update system.
-        run_cmd("apt update")
-        run_cmd("apt -y upgrade")
-        run_cmd("apt -y dist-upgrade")
-        run_cmd("apt autoremove") # -y ??
-        run_cmd("apt autoclean") # -y ??
+        apt.update()
+        apt.upgrade()
+        apt.dist_upgrade()
+        apt.autoremove()
+        apt.autoclean()
         
         # Update disk drivers.
         run_cmd("fwupdmgr get-devices")
@@ -179,17 +179,18 @@ def install_drivers(OS, PC):
         # run_cmd("reboot now") # Nedds to save STATE if enable reboot.
         
         # System Utilities.
-        run_cmd("apt install -y snapd")
-        run_cmd("apt install -y flatpak")
+        apt.install("snapd")
+        apt.install("flatpak")
         flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
         flatpak.update()
         flatpak.install("flatseal") # Tool to check or change the permissions of your flatpaks
-        run_cmd("apt install -y nautilus-admin")
-        run_cmd("apt install -y caffeine") # A little helper in case my laptop needs to stay up all night
+        apt.install("nautilus-admin")
+        apt.install("caffeine") # A little helper in case my laptop needs to stay up all night
         
         # Install Codecs and VLC.
-        run_cmd("apt install -y vlc")
-        run_cmd("apt install -y libavcodec-extra libdvd-pkg; dpkg-reconfigure libdvd-pkg")
+        apt.install("vlc")
+        apt.install("libavcodec-extra", "libdvd-pkg")
+        run_cmd("dpkg-reconfigure libdvd-pkg")
         
       
     elif PC == "Laptop":
@@ -229,7 +230,7 @@ def install_dropbox():
         dnf.install("dropbox", "nautilus-dropbox")
 
     elif OS == "Ubuntu":
-        run_cmd("apt install -y nautilus-dropbox")
+        apt.install("nautilus-dropbox")
         
 def install_nextcloud():
     if OS == "Fedora":
@@ -239,7 +240,7 @@ def install_nextcloud():
         run_cmd("sysctl -p")
         
     elif OS == "Ubuntu":
-        run_cmd("apt install -y nextcloud-desktop")
+        apt.install("nextcloud-desktop")
         
 
 def install_google():
@@ -269,7 +270,7 @@ def install_chromium():
         dnf.install("chromium")
         
     elif OS == "Ubuntu":
-        run_cmd("apt install -y chromium-browser")
+        apt.install("chromium-browser")
 
 if __name__ == "__main__":
     main()
