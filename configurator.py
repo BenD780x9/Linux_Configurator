@@ -56,10 +56,10 @@ def main():
     else:
         PC = "Laptop"    
 
-    system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
-
     ### APP ###
-
+    
+    system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
+    
     app = QApplication(sys.argv)
     window = QWidget()
     window.setWindowTitle('Installer')
