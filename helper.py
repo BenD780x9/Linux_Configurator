@@ -10,6 +10,9 @@ def run_cmd(cmd):
 def set_hostname(hostname):
     run_cmd(f"hostnamectl set-hostname {hostname}")
 
+def dpkg_install(package):
+    run_cmd(f"dpkg -i {package}")
+
 class dnf:
     def do(cmd): # run an unimplemented command
         run_cmd(f"dnf {cmd}")
