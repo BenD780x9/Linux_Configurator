@@ -3,9 +3,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from functools import partial
 from PyQt5.QtWidgets import *
 from helper import *
-from functools import partial
 
 def main():
     if not is_sudo():
