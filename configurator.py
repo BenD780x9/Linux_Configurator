@@ -7,6 +7,14 @@ from functools import partial
 from PyQt5.QtWidgets import *
 from helper import *
 
+# global vars
+HOME = None
+OS = None
+PC = None
+DE = None
+GPU = None
+##############
+
 def main():
     if not is_sudo():
         print("This script must be run as root") # replace with a QMessageBox not DEBUG
@@ -16,8 +24,6 @@ def main():
 
     """Determine the Distro and Desktop Enviroment"""
     distro = os.popen("cat /etc/*release").read()
-    OS = ""
-    DE = ""
     if "fedora" in distro:
         OS = "Fedora"
         if "KDE" in distro:
@@ -117,7 +123,7 @@ def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chrom
         print("DEBUG:chromium") # replace with install_chromium()
 
 
-def install_drivers(OS, PC):
+def install_drivers():
     if OS == "Fedora":
         dnf.upgrade()
         dnf.check()
