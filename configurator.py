@@ -96,25 +96,25 @@ def main():
 
 
 def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chromium): # all booleans to indicate if installation needed
-    print("We need to install:")
+    print("DEBUG:We need to install:")
     if drivers.checkState():
-        print("Drivers") # replace with install_drivers()
+        print("DEBUG:Drivers") # replace with install_drivers()
     if gpu.checkState():
-        print("GPU drivers") # replace with install_gpu()
+        print("DEBUG:GPU drivers") # replace with install_gpu()
     if dropbox.checkState():
-        print("dropbox") # replace with install_dropbox()
+        print("DEBUG:dropbox") # replace with install_dropbox()
     if nextcloud.checkState():
-        print("nextcloud") # replace with install_nextcloud()
+        print("DEBUG:nextcloud") # replace with install_nextcloud()
     if google.checkState():
-        print("google") # replace with install_google()
+        print("DEBUG:google") # replace with install_google()
     if zoom.checkState():
-        print("zoom") # replace with install_zoom()
+        print("DEBUG:zoom") # replace with install_zoom()
     if skype.checkState():
-        print("skype") # replace with install_skype()
+        print("DEBUG:skype") # replace with install_skype()
     if chrome.checkState():
-        print("chrome") # replace with install_chrome()
+        print("DEBUG:chrome") # replace with install_chrome()
     if chromium.checkState():
-        print("chromium") # replace with install_chromium()
+        print("DEBUG:chromium") # replace with install_chromium()
 
 
 def install_drivers(OS, PC):
