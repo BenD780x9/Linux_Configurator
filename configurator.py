@@ -98,7 +98,7 @@ def main():
 def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chromium): # all booleans to indicate if installation needed
     print("We need to install:")
     if drivers.checkState():
-        print("Drivers") # replace with drivers()
+        print("Drivers") # replace with install_drivers()
     if gpu.checkState():
         print("GPU drivers") # replace with install_gpu()
     if dropbox.checkState():
@@ -117,7 +117,7 @@ def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chrom
         print("chromium") # replace with install_chromium()
 
 
-def drivers():
+def install_drivers():
     if OS == "Fedora":
         run_cmd("dnf -y upgrade --refresh")
         run_cmd("dnf check")
