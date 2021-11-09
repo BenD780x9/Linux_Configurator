@@ -6,49 +6,111 @@ from pathlib import Path
 from PyQt5.QtWidgets import *
 from helper import *
 
-if not is_sudo():
-    print("This script must be run as root") # replace with a QMessageBox
-    sys.exit()
+def main():
+    if not is_sudo():
+        print("This script must be run as root") # replace with a QMessageBox
+        sys.exit()
 
-HOME = str(Path.home())
+    HOME = str(Path.home())
 
-"""Determine the Distro and Desktop Enviroment"""
-distro = os.popen("cat /etc/*release").read()
-OS = ""
-DE = ""
-if "fedora" in distro:
-    OS = "Fedora"
-    if "KDE" in distro:
-        DE = "KDE"
+    """Determine the Distro and Desktop Enviroment"""
+    distro = os.popen("cat /etc/*release").read()
+    OS = ""
+    DE = ""
+    if "fedora" in distro:
+        OS = "Fedora"
+        if "KDE" in distro:
+            DE = "KDE"
+        else:
+            DE = "GNOME"
+    elif "ubuntu" in distro:
+        OS = "Ubuntu"
+        if "KDE" in distro:
+            DE = "KDE"
+        else:
+            DE = "GNOME"
+
+
+
+    """Determine which GPU is in the PC"""
+    gpu = os.popen("lspci | grep VGA").read().lower()
+    if "intel" in gpu:
+        GPU = "Intel"
+    elif "amd" in gpu:
+        GPU = "AMD"
+    elif "nvidia" in gpu:
+        GPU = "Nvidia"
     else:
-        DE = "GNOME"
-elif "ubuntu" in distro:
-    OS = "Ubuntu"
-    if "KDE" in distro:
-        DE = "KDE"
+        GPU = "Unknown"
+
+    """Determine if the computer is PC or a Laptop"""
+    if not os.path.exists("/proc/acpi/button/lid"):
+        PC = "Desktop"
     else:
-        DE = "GNOME"
+        PC = "Laptop"    
+
+    system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
+
+        ### APP ###
+
+    app = QApplication(sys.argv)
+    window = QWidget()
+    window.setWindowTitle('Installer')
+    window.setGeometry(400, 400, 400, 400)
+    layout = QVBoxLayout()
+    label = QLabel(f'{system}\n\nChoose what to install')
+    cb_drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
+    cb_gpu = QCheckBox(f"Install {GPU} drivers")
+    cb_dropbox = QCheckBox('Install Dropbox')
+    cb_nextcloud = QCheckBox('Install NextCloud')
+    cb_google = QCheckBox('Install Google Cloud')
+    cb_skype = QCheckBox('Install Skype')
+    cb_zoom = QCheckBox('Install Zoom')
+    cb_chrome = QCheckBox('Install Chrome')
+    cb_chromium = QCheckBox('Install Chromium')
+        
+    cb_drivers.setChecked(True)
+
+    # Check what box user check and install it.
+    # "checkState" check if box is chacked 0 is NO / 2 is YES
+    def install():
+        d = {   'drivers': (cb_drivers.checkState()),
+                'gpu': (cb_gpu.checkState()),
+                'dropbox': (cb_dropbox.checkState()),
+                'nextcloud': (cb_nextcloud.checkState()),
+                'google': (cb_google.checkState()),
+                'zoom': (cb_zoom.checkState()),
+                'skype': (cb_skype.checkState()),
+                'chrome': (cb_chrome.checkState()),
+                'chromium': (cb_chromium.checkState()),
+                }
+        
+        o = []
+        filtered_dictionary = {}
+        filtered_dictionary = {o.append(key) for key, value in d.items() if value == 2}
+        print(o)     
 
 
+    btn = QPushButton('Start Install')
+    btn.clicked.connect(install)
 
-"""Determine which GPU is in the PC"""
-gpu = os.popen("lspci | grep VGA").read().lower()
-if "intel" in gpu:
-    GPU = "Intel"
-elif "amd" in gpu:
-    GPU = "AMD"
-elif "nvidia" in gpu:
-    GPU = "Nvidia"
-else:
-    GPU = "Unknown"
+    layout.addWidget(label)
 
-"""Determine if the computer is PC or a Laptop"""
-if not os.path.exists("/proc/acpi/button/lid"):
-    PC = "Desktop"
-else:
-    PC = "Laptop"    
+    layout.addWidget(cb_drivers)
+    layout.addWidget(cb_gpu)
+    layout.addWidget(cb_dropbox)
+    layout.addWidget(cb_nextcloud)
+    layout.addWidget(cb_google)
+    layout.addWidget(cb_zoom)
+    layout.addWidget(cb_skype)
+    layout.addWidget(cb_chrome)
+    layout.addWidget(cb_chromium)
 
-system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
+
+    layout.addWidget(btn)
+    window.setLayout(layout)
+    window.show()
+    sys.exit(app.exec_())
 
 
 
@@ -211,66 +273,5 @@ def install_chromium():
     elif OS == "Ubuntu":
         run_cmd("apt install -y chromium-browser")
 
-### APP ###
-
-app = QApplication(sys.argv)
-window = QWidget()
-window.setWindowTitle('Installer')
-window.setGeometry(400, 400, 400, 400)
-layout = QVBoxLayout()
-label = QLabel(f'{system}\n\nChoose what to install')
-cb_drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
-cb_gpu = QCheckBox(f"Install {GPU} drivers")
-cb_dropbox = QCheckBox('Install Dropbox')
-cb_nextcloud = QCheckBox('Install NextCloud')
-cb_google = QCheckBox('Install Google Cloud')
-cb_skype = QCheckBox('Install Skype')
-cb_zoom = QCheckBox('Install Zoom')
-cb_chrome = QCheckBox('Install Chrome')
-cb_chromium = QCheckBox('Install Chromium')
-    
-cb_drivers.setChecked(True)
-
-# Check what box user check and install it.
-# "checkState" check if box is chacked 0 is NO / 2 is YES
-def install():
-    d = {   'drivers': (cb_drivers.checkState()),
-            'gpu': (cb_gpu.checkState()),
-            'dropbox': (cb_dropbox.checkState()),
-            'nextcloud': (cb_nextcloud.checkState()),
-            'google': (cb_google.checkState()),
-            'zoom': (cb_zoom.checkState()),
-            'skype': (cb_skype.checkState()),
-            'chrome': (cb_chrome.checkState()),
-            'chromium': (cb_chromium.checkState()),
-            }
-    
-    o = []
-    filtered_dictionary = {}
-    filtered_dictionary = {o.append(key) for key, value in d.items() if value == 2}
-    print(o)     
-
-
-btn = QPushButton('Start Install')
-btn.clicked.connect(install)
-
-layout.addWidget(label)
-
-layout.addWidget(cb_drivers)
-layout.addWidget(cb_gpu)
-layout.addWidget(cb_dropbox)
-layout.addWidget(cb_nextcloud)
-layout.addWidget(cb_google)
-layout.addWidget(cb_zoom)
-layout.addWidget(cb_skype)
-layout.addWidget(cb_chrome)
-layout.addWidget(cb_chromium)
-
-
-layout.addWidget(btn)
-window.setLayout(layout)
-window.show()
-sys.exit(app.exec_())
-
-
-
+if __name__ == "__main__":
+    main()
