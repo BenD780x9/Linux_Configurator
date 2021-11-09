@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from PyQt5.QtWidgets import *
 from helper import *
+from functools import partial
 
 def main():
     if not is_sudo():
@@ -71,28 +72,9 @@ def main():
         
     cb_drivers.setChecked(True)
 
-    # Check what box user check and install it.
-    # "checkState" check if box is chacked 0 is NO / 2 is YES
-    def install():
-        d = {   'drivers': (cb_drivers.checkState()),
-                'gpu': (cb_gpu.checkState()),
-                'dropbox': (cb_dropbox.checkState()),
-                'nextcloud': (cb_nextcloud.checkState()),
-                'google': (cb_google.checkState()),
-                'zoom': (cb_zoom.checkState()),
-                'skype': (cb_skype.checkState()),
-                'chrome': (cb_chrome.checkState()),
-                'chromium': (cb_chromium.checkState()),
-                }
-        
-        o = []
-        filtered_dictionary = {}
-        filtered_dictionary = {o.append(key) for key, value in d.items() if value == 2}
-        print(o)     
-
-
     btn = QPushButton('Start Install')
-    btn.clicked.connect(install)
+    install_func = partial(install, cb_drivers, cb_gpu, cb_dropbox, cb_nextcloud, cb_google, cb_zoom, cb_skype, cb_chrome, cb_chromium)
+    btn.clicked.connect(install_func)
 
     layout.addWidget(label)
 
@@ -112,6 +94,27 @@ def main():
     window.show()
     sys.exit(app.exec_())
 
+
+def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chromium): # all booleans to indicate if installation needed
+    print("We need to install:")
+    if drivers.checkState():
+        print("Drivers") # replace with drivers()
+    if gpu.checkState():
+        print("GPU drivers") # replace with install_gpu()
+    if dropbox.checkState():
+        print("dropbox") # replace with install_dropbox()
+    if nextcloud.checkState():
+        print("nextcloud") # replace with install_nextcloud()
+    if google.checkState():
+        print("google") # replace with install_google()
+    if zoom.checkState():
+        print("zoom") # replace with install_zoom()
+    if skype.checkState():
+        print("skype") # replace with install_skype()
+    if chrome.checkState():
+        print("chrome") # replace with install_chrome()
+    if chromium.checkState():
+        print("chromium") # replace with install_chromium()
 
 
 def drivers():
@@ -222,9 +225,6 @@ def install_gpu():
         #run_cmd('Section "Device"\n\tIdentifier "AMD"\n\tDriver "amdgpu"\nEndSection" > /etc/X11/xorg.conf.d/20-amdgpu.conf') 
 
     #elif GPU == "Intel": Disable for now until we have installation process    
-
-
-
  
 def install_dropbox():
     if OS == "Fedora":
