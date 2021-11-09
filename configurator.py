@@ -58,14 +58,13 @@ def main():
 
     ### APP ###
     
-    system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
-    
     app = QApplication(sys.argv)
     window = QWidget()
     window.setWindowTitle('Installer')
     window.setGeometry(400, 400, 400, 400)
     layout = QVBoxLayout()
-    label = QLabel(f'{system}\n\nChoose what to install')
+    infostr = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
+    label = QLabel(f'{infostr}\n\nChoose what to install')
     cb_drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
     cb_gpu = QCheckBox(f"Install {GPU} drivers")
     cb_dropbox = QCheckBox('Install Dropbox')
