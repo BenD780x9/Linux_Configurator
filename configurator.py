@@ -9,7 +9,7 @@ from functools import partial
 
 def main():
     if not is_sudo():
-        print("This script must be run as root") # replace with a QMessageBox
+        print("This script must be run as root") # replace with a QMessageBox not DEBUG
         sys.exit()
 
     HOME = str(Path.home())
@@ -133,13 +133,11 @@ def install_drivers(OS, PC):
         dnf.install("dnf-plugins-core")
 
         # Enable Fastest Mirror Plugin.
-        print("Enable Fastest Mirror")
         run_cmd("echo 'fastestmirror=true' | tee -a /etc/dnf/dnf.conf")
         run_cmd("echo 'max_parallel_downloads=20' | tee -a /etc/dnf/dnf.conf")
         run_cmd("echo 'deltarpm=true' | tee -a /etc/dnf/dnf.conf")
 
         # Install Flatpak, Snap and Fedy
-        print("Install Flatpak, Snap and Fedy")
         run_cmd("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
         run_cmd("flatpak update")
         dnf.install("snapd")
@@ -149,7 +147,6 @@ def install_drivers(OS, PC):
         run_cmd("flatpak install -y flatseal")
         
         # Install Codecs and VLC.
-        print("Install Codecs and VLC")
         dnf.install("vlc")
         dnf.group_update("sound-and-video")
         dnf.install("libdvdcss")
@@ -161,7 +158,7 @@ def install_drivers(OS, PC):
         # Update disk drivers.
         run_cmd("fwupdmgr refresh --force")
         if "WARNING:" in subprocess.getoutput('fwupdmgr get-updates'):
-            print("true")
+            print("DEBUG:true")
             run_cmd("echo 'DisabledPlugins=test;invalid;uefi' | tee -a /etc/fwupd/daemon.conf") # Remove WARNING: Firmware can not be updated in legacy BIOS mode.
         run_cmd("fwupdmgr get-updates")
         run_cmd("fwupdmgr update")
