@@ -39,3 +39,16 @@ class dnf:
     
     def config_manager(operation, value):
         run_cmd(f"dnf config-manager --{operation} {value}")
+
+class flatpak:
+    def update():
+        run_cmd("flatpak update")
+
+    def remote_add(name, url, *args):
+        cmd = f"flatpak remote-add {name} {url}"
+        for arg in args:
+            cmd += " " + arg
+        run_cmd(cmd)
+
+    def install(package):
+        run_cmd(f"flatpak install -y {package}")
