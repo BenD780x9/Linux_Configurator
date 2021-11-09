@@ -1,4 +1,4 @@
-import os
+import os, requests
 import subprocess as sp
 
 def is_sudo():
@@ -12,6 +12,10 @@ def set_hostname(hostname):
 
 def dpkg_install(package):
     run_cmd(f"dpkg -i {package}")
+
+def download_file(url):
+    file = requests.get(url)
+    open(url.split("/")[-1], 'wb').write(file.content)
 
 class dnf:
     def do(cmd): # run an unimplemented command
