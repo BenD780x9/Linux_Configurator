@@ -41,6 +41,8 @@ class dnf:
         run_cmd(f"dnf config-manager --{operation} {value}")
 
 class flatpak:
+    def do(cmd): # run an unimplemented command
+        run_cmd(f"flatpak {cmd}")
     def update():
         run_cmd("flatpak update")
 
@@ -52,3 +54,28 @@ class flatpak:
 
     def install(package):
         run_cmd(f"flatpak install -y {package}")
+
+class apt:
+    def do(cmd): # run an unimplemented command
+        run_cmd(f"apt {cmd}")
+
+    def update():
+        run_cmd("apt update")
+
+    def upgrade():
+        run_cmd("apt -y upgrade")
+
+    def dist_upgrade():
+        run_cmd("apt -y dist-upgrade")
+    
+    def autoremove():
+        run_cmd("apt -y autoremove")
+    
+    def autoclean():
+        run_cmd("apt -y autoclean")
+    
+    def install(package, *args):
+        cmd = f"apt install -y {package}"
+        for arg in args:
+            cmd += " " + arg
+        run_cmd(cmd)
