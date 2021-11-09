@@ -21,68 +21,68 @@ class dnf:
     def do(cmd): # run an unimplemented command
         run_cmd(f"dnf {cmd}")
     def upgrade():
-        run_cmd("dnf -y upgrade --refresh")
+        do("-y upgrade --refresh")
 
     def check():
-        run_cmd("dnf check")
+        do("check")
 
     def install(package, *args):
-        cmd = f"dnf install -y {package}"
+        cmd = f"install -y {package}"
         for arg in args:
             cmd += " " + arg
-        run_cmd(cmd)
+        do(cmd)
     
     def group(operation, group, *args):
-        cmd = f"dnf group {operation} {group}"
+        cmd = f"group {operation} {group}"
         for arg in args:
             cmd += " " + arg
-        run_cmd(cmd)
+        do(cmd)
 
     def group_update(group, *args):
-        cmd = f"dnf groupupdate {group}"
+        cmd = f"groupupdate {group}"
         for arg in args:
             cmd += " " + arg
-        run_cmd(cmd)
+        do(cmd)
     
     def config_manager(operation, value):
-        run_cmd(f"dnf config-manager --{operation} {value}")
+        do(f"config-manager --{operation} {value}")
 
 class flatpak:
     def do(cmd): # run an unimplemented command
         run_cmd(f"flatpak {cmd}")
     def update():
-        run_cmd("flatpak update")
+        do("update")
 
     def remote_add(name, url, *args):
-        cmd = f"flatpak remote-add {name} {url}"
+        cmd = f"remote-add {name} {url}"
         for arg in args:
             cmd += " " + arg
-        run_cmd(cmd)
+        do(cmd)
 
     def install(package):
-        run_cmd(f"flatpak install -y {package}")
+        do(f"install -y {package}")
 
 class apt:
     def do(cmd): # run an unimplemented command
         run_cmd(f"apt {cmd}")
 
     def update():
-        run_cmd("apt update")
+        do("update")
 
     def upgrade():
-        run_cmd("apt -y upgrade")
+        do("-y upgrade")
 
     def dist_upgrade():
-        run_cmd("apt -y dist-upgrade")
+        do("-y dist-upgrade")
     
     def autoremove():
-        run_cmd("apt -y autoremove")
+        do("-y autoremove")
     
     def autoclean():
-        run_cmd("apt -y autoclean")
+        do("-y autoclean")
     
     def install(package, *args):
-        cmd = f"apt install -y {package}"
+        cmd = f"install -y {package}"
         for arg in args:
             cmd += " " + arg
-        run_cmd(cmd)
+        do(cmd)
