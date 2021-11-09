@@ -22,7 +22,7 @@ def main():
 
     HOME = str(Path.home())
 
-    """Determine the Distro and Desktop Enviroment"""
+    # Determine the Distro and Desktop Enviroment #
     distro = os.popen("cat /etc/*release").read()
     if "fedora" in distro:
         OS = "Fedora"
@@ -39,7 +39,7 @@ def main():
 
 
 
-    """Determine which GPU is in the PC"""
+    # Determine which GPU is in the PC #
     gpu = os.popen("lspci | grep VGA").read().lower()
     if "intel" in gpu:
         GPU = "Intel"
@@ -50,7 +50,7 @@ def main():
     else:
         GPU = "Unknown"
 
-    """Determine if the computer is PC or a Laptop"""
+    # Determine if the computer is PC or a Laptop #
     if not os.path.exists("/proc/acpi/button/lid"):
         PC = "Desktop"
     else:
@@ -58,7 +58,7 @@ def main():
 
     system = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
 
-        ### APP ###
+    ### APP ###
 
     app = QApplication(sys.argv)
     window = QWidget()
