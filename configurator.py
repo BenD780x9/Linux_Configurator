@@ -138,13 +138,13 @@ def install_drivers(OS, PC):
         run_cmd("echo 'deltarpm=true' | tee -a /etc/dnf/dnf.conf")
 
         # Install Flatpak, Snap and Fedy
-        run_cmd("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
-        run_cmd("flatpak update")
+        flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
+        flatpak.update()
         dnf.install("snapd")
         run_cmd("ln -s /var/lib/snapd/snap /snap") # "sudo snap refresh" AFTER REBOOT # for classic snap support
         dnf.do("copr enable kwizart/fedy")
         dnf.install("fedy")
-        run_cmd("flatpak install -y flatseal")
+        flatpak.install("flatseal")
         
         # Install Codecs and VLC.
         dnf.install("vlc")
@@ -181,8 +181,9 @@ def install_drivers(OS, PC):
         # System Utilities.
         run_cmd("apt install -y snapd")
         run_cmd("apt install -y flatpak")
-        run_cmd("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
-        run_cmd("flatpak install flatseal") # Tool to check or change the permissions of your flatpaks
+        flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
+        flatpak.update()
+        flatpak.install("flatseal") # Tool to check or change the permissions of your flatpaks
         run_cmd("apt install -y nautilus-admin")
         run_cmd("apt install -y caffeine") # A little helper in case my laptop needs to stay up all night
         
@@ -248,10 +249,10 @@ def install_google():
     run_cmd("yum install -y overgrive-3.3.*.noarch.rpm")
 
 def install_skype():
-    run_cmd("flatpak install -y skype")
+    flatpak.install("skype")
 
 def install_zoom():    
-    run_cmd("flatpak install -y zoom")
+    flatpak.install("zoom")
         
 def install_chrome():
     if OS == "Fedora":
