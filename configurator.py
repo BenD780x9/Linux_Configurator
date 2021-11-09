@@ -262,8 +262,8 @@ def install_chrome():
         dnf.install("google-chrome-stable")
         
     elif OS == "Ubuntu":
-        run_cmd("wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
-        run_cmd("dpkg -i google-chrome-stable_current_amd64.deb")
+        download_file("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
+        dpkg_install("google-chrome-stable_current_amd64.deb")
         
 def install_chromium():
     if OS == "Fedora":
