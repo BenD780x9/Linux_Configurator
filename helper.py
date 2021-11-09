@@ -11,6 +11,8 @@ def set_hostname(hostname):
     run_cmd(f"hostnamectl set-hostname {hostname}")
 
 class dnf:
+    def do(cmd): # run an unimplemented command
+        run_cmd(f"dnf {cmd}")
     def upgrade():
         run_cmd("dnf -y upgrade --refresh")
 
@@ -36,4 +38,4 @@ class dnf:
         run_cmd(cmd)
     
     def config_manager(operation, value):
-        run_cmd(f"dnf config-manager {operation} {value}")
+        run_cmd(f"dnf config-manager --{operation} {value}")
