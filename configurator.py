@@ -4,9 +4,9 @@ import sys
 import time
 from pathlib import Path
 from PyQt5.QtWidgets import *
-import helper
+from helper import *
 
-if not helper.is_sudo():
+if not is_sudo():
     print("This script must be run as root") # replace with a QMessageBox
     sys.exit()
 
