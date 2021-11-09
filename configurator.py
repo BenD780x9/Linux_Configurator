@@ -117,20 +117,20 @@ def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chrom
         print("chromium") # replace with install_chromium()
 
 
-def install_drivers():
+def install_drivers(OS, PC):
     if OS == "Fedora":
-        run_cmd("dnf -y upgrade --refresh")
-        run_cmd("dnf check")
-        run_cmd("hostnamectl set-hostname fedora") # By default my machine is called localhost; hence, I rename it for better accessability on the network.
+        dnf.upgrade()
+        dnf.check()
+        set_hostname("fedora") # By default my machine is called localhost; hence, I rename it for better accessability on the network.
 
         
         # Enable RPM Fusion
         run_cmd("rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm")
         run_cmd("rpm -Uvh http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm")
         # Enable the RPM Fusion free and nonfree repositories.
-        run_cmd("dnf groupupdate core")
-        run_cmd("dnf install -y rpmfusion-free-release-tainted")
-        run_cmd("dnf install -y dnf-plugins-core")
+        dnf.group_update("core")
+        dnf.install("rpmfusion-free-release-tainted")
+        dnf.install("dnf-plugins-core")
 
         # Enable Fastest Mirror Plugin.
         print("Enable Fastest Mirror")
@@ -142,21 +142,21 @@ def install_drivers():
         print("Install Flatpak, Snap and Fedy")
         run_cmd("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
         run_cmd("flatpak update")
-        run_cmd("dnf install -y snapd")
+        dnf.install("snapd")
         run_cmd("ln -s /var/lib/snapd/snap /snap") # "sudo snap refresh" AFTER REBOOT # for classic snap support
-        run_cmd("dnf copr enable kwizart/fedy")
-        run_cmd("dnf install -y fedy")
+        dnf.do("copr enable kwizart/fedy")
+        dnf.install("fedy")
         run_cmd("flatpak install -y flatseal")
         
         # Install Codecs and VLC.
         print("Install Codecs and VLC")
-        run_cmd("dnf install -y vlc")
-        run_cmd("dnf groupupdate sound-and-video")
-        run_cmd("dnf install -y libdvdcss")
-        run_cmd("dnf install -y lame\* --exclude=lame-devel")
-        run_cmd("dnf group upgrade --with-optional Multimedia")
-        run_cmd("dnf config-manager --set-enabled fedora-cisco-openh264")
-        run_cmd("dnf install -y gstreamer1-plugin-openh264 mozilla-openh264")  
+        dnf.install("vlc")
+        dnf.group_update("sound-and-video")
+        dnf.install("libdvdcss")
+        dnf.install("lame\*", "--exclude=lame-devel")
+        dnf.group("upgrade", "Multimedia", "--with-optional")
+        dnf.config_manager("set-enabled", "fedora-cisco-openh264")
+        dnf.install("gstreamer1-plugin-openh264", "mozilla-openh264")
         
         # Update disk drivers.
         run_cmd("fwupdmgr refresh --force")
@@ -198,7 +198,7 @@ def install_drivers():
         
         if OS == "Fedora":
             # Reduce Battery Usage - TLP.
-            run_cmd("dnf install -y tlp tlp-rdw")
+            dnf.install("tlp", "tlp-rdw")
             run_cmd("systemctl enable tlp")
             
         if OS == "Ubuntu":
@@ -211,11 +211,11 @@ def install_gpu():
 
     if GPU == "Nvidia":
         run_cmd("modinfo -F version nvidia")
-        run_cmd("dnf install -y akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
-        run_cmd("dnf install -y xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
-        run_cmd("dnf install -y xorg-x11-drv-nvidia-cuda-libs")
-        run_cmd("dnf install -y vdpauinfo libva-vdpau-driver libva-utils")
-        run_cmd("dnf install -y vulkan")
+        dnf.install("akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
+        dnf.install("xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
+        dnf.install("xorg-x11-drv-nvidia-cuda-libs")
+        dnf.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
+        dnf.install("vulkan")
         run_cmd("modinfo -F version nvidia")
     
     #elif GPU == "AMD": # Disable for now until we have installation process
@@ -228,14 +228,14 @@ def install_gpu():
  
 def install_dropbox():
     if OS == "Fedora":
-        run_cmd("dnf install -y dropbox nautilus-dropbox")
+        dnf.install("dropbox", "nautilus-dropbox")
 
     elif OS == "Ubuntu":
         run_cmd("apt install -y nautilus-dropbox")
         
 def install_nextcloud():
     if OS == "Fedora":
-        run_cmd("dnf install -y nextcloud-client nextcloud-client-nautilus")
+        dnf.install("nextcloud-client", "nextcloud-client-nautilus")
         run_cmd("-i")
         run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
         run_cmd("sysctl -p")
@@ -245,7 +245,7 @@ def install_nextcloud():
         
 
 def install_google():
-    run_cmd("dnf install -y python3-devel python3-pip python3-inotify python3-gobject cairo-devel cairo-gobject-devel libappindicator-gtk3")
+    dnf.install("python3-devel", "python3-pip", "python3-inotify", "python3-gobject", "cairo-devel", "cairo-gobject-devel", "libappindicator-gtk3")
     run_cmd("python3 -m pip install --upgrade google-api-python-client")
     run_cmd("python3 -m pip install --upgrade oauth2client")
     run_cmd("yum install -y overgrive-3.3.*.noarch.rpm")
@@ -258,9 +258,9 @@ def install_zoom():
         
 def install_chrome():
     if OS == "Fedora":
-        run_cmd("dnf install -y fedora-workstation-repositories")
-        run_cmd("dnf config-manager --set-enabled google-chrome")
-        run_cmd("dnf install -y google-chrome-stable")
+        dnf.install("fedora-workstation-repositories")
+        dnf.config_manager("set-enabled", "google-chrome")
+        dnf.install("google-chrome-stable")
         
     elif OS == "Ubuntu":
         run_cmd("wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
@@ -268,7 +268,7 @@ def install_chrome():
         
 def install_chromium():
     if OS == "Fedora":
-        run_cmd("dnf install -y chromium")
+        dnf.install("chromium")
         
     elif OS == "Ubuntu":
         run_cmd("apt install -y chromium-browser")
