@@ -115,7 +115,7 @@ def install_drivers(facts):
         run_cmd("apt-get update")
         run_cmd("apt-get install ubuntu-cleaner")
         
-    elif DE == "GNOME":
+    elif facts.DE == "GNOME":
     
         # Enable “Click to Minimize”.
         run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'")
