@@ -10,9 +10,11 @@ from helper import *
 def main():
     facts = Facts()
     if not is_sudo():
-        print("This script must be run as root") # replace with a QMessageBox not DEBUG
+        print("This script must be run as root") # replace with a QMessageBox, not DEBUG
         sys.exit()
+    collect_facts(facts)
 
+def collect_facts(facts):
     facts.HOME = str(Path.home())
 
     # Determine the Distro and Desktop Enviroment #
@@ -45,9 +47,7 @@ def main():
     if not os.path.exists("/proc/acpi/button/lid"):
         facts.PC = "Desktop"
     else:
-        facts.PC = "Laptop"    
-
-
+        facts.PC = "Laptop"   
 
 def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chromium): # all booleans to indicate if installation needed
     print("DEBUG:We need to install:")
