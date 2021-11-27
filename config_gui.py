@@ -6,7 +6,6 @@ from helper import *
 
 class MainWindow(QWidget):
     def __init__(self, facts):
-        print("yo")
         super().__init__()
         self.facts = facts
         self.initUI()
