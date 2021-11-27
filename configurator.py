@@ -56,48 +56,6 @@ def main():
     else:
         PC = "Laptop"    
 
-    ### APP ###
-    
-    app = QApplication(sys.argv)
-    window = QWidget()
-    window.setWindowTitle('Installer')
-    window.setGeometry(400, 400, 400, 400)
-    layout = QVBoxLayout()
-    infostr = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
-    label = QLabel(f'{infostr}\n\nChoose what to install')
-    cb_drivers = QCheckBox(f"Install System configs and Drivers   (Recommended)")
-    cb_gpu = QCheckBox(f"Install {GPU} drivers")
-    cb_dropbox = QCheckBox('Install Dropbox')
-    cb_nextcloud = QCheckBox('Install NextCloud')
-    cb_google = QCheckBox('Install Google Cloud')
-    cb_skype = QCheckBox('Install Skype')
-    cb_zoom = QCheckBox('Install Zoom')
-    cb_chrome = QCheckBox('Install Chrome')
-    cb_chromium = QCheckBox('Install Chromium')
-        
-    cb_drivers.setChecked(True)
-
-    btn = QPushButton('Start Install')
-    install_func = partial(install, cb_drivers, cb_gpu, cb_dropbox, cb_nextcloud, cb_google, cb_zoom, cb_skype, cb_chrome, cb_chromium)
-    btn.clicked.connect(install_func)
-
-    layout.addWidget(label)
-
-    layout.addWidget(cb_drivers)
-    layout.addWidget(cb_gpu)
-    layout.addWidget(cb_dropbox)
-    layout.addWidget(cb_nextcloud)
-    layout.addWidget(cb_google)
-    layout.addWidget(cb_zoom)
-    layout.addWidget(cb_skype)
-    layout.addWidget(cb_chrome)
-    layout.addWidget(cb_chromium)
-
-
-    layout.addWidget(btn)
-    window.setLayout(layout)
-    window.show()
-    sys.exit(app.exec_())
 
 
 def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chromium): # all booleans to indicate if installation needed
@@ -192,15 +150,52 @@ def install_drivers():
         apt.install("nautilus-admin")
         apt.install("caffeine") # A little helper in case my laptop needs to stay up all night
         
+        # Enable Firewall.
+        run_cmd("ufw enable")
+        apt.install("apt-get install gufw")
+        
         # Install JAVA.
         apt.install('openjdk-14-jre')
         
         # Install Codecs and VLC.
+        apt.install("libavcodec-extra", "libdvd-pkg", "ubuntu-restricted-extras", "ubuntu-restricted-addons")
         apt.install("vlc")
-        apt.install("libavcodec-extra", "libdvd-pkg")
+        apt.install("ubuntu-restricted-extras", "libdvdnav4", "gstreamer1.0-plugins-bad", "gstreamer1.0-plugins-ugly", "libdvd-pkg")
         run_cmd("dpkg-reconfigure libdvd-pkg")
         
-      
+        # Upgrade Bluetooth Codec.
+        run_cmd("add-apt-repository ppa:berglh/pulseaudio-a2dp")
+        run_cmd("apt update")
+        apt.install("pulseaudio-modules-bt", "libldac")
+        
+        # Install Ubuntu Cleaner
+        run_cmd("add-apt-repository ppa:gerardpuig/ppa")
+        run_cmd("apt-get update")
+        run_cmd("apt-get install ubuntu-cleaner")
+        
+    elif DE == "GNOME"
+    
+        # Enable “Click to Minimize”.
+        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'")
+        
+        # Move ‘Show Applications’ (9 dots icon) to the top.
+        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true")
+        
+        # Shorten the panel to make it compact.
+        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false")
+        
+        # Move dock to the bottom, though you may do it via System Settings.
+        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM")
+        
+        # Disable USB and other removable device icons from panel.
+        #run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock show-mounts false")
+        
+        # Enable Gnome Extensions Support.
+        apt.install("chrome-gnome-shell", "gnome-shell-extension-prefs", "gnome-tweaks")
+        
+        # Install Gnome Weather.
+        apt.install("gnome-weather")
+    
     elif PC == "Laptop":
         
         if OS == "Fedora":
