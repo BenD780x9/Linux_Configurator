@@ -14,7 +14,7 @@ class MainWindow(QWidget):
     def initUI(self):
         vbox = QVBoxLayout()
         
-        self.label = QtWidgets.QLabel(f"You are runnig a {PC} PC \nYour system is {OS} with {GPU} GPU.\n\nChoose what to install:")
+        self.label = QtWidgets.QLabel(f"You are runnig a {self.facts.PC} PC \nYour system is {self.facts.OS} with {self.facts.GPU} GPU.\n\nChoose what to install:")
         vbox.addWidget(self.label)
         
         self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
