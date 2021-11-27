@@ -13,7 +13,10 @@ class MainWindow(QWidget):
 
     def initUI(self):
         vbox = QVBoxLayout()
-
+        
+        self.label = QtWidgets.QLabel(f"You are runnig a {PC} PC \nYour system is {OS} with {GPU} GPU.\n\nChoose what to install:")
+        vbox.addWidget(self.label)
+        
         self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
         vbox.addWidget(self.cb_drivers)
         self.cb_drivers.setChecked(True)
@@ -70,39 +73,39 @@ class MainWindow(QWidget):
         
         if self.cb_drivers.checkState():
             self.dic['cb_drivers'] = True
-            print("DEBUG:Drivers")
+            #print("DEBUG:Drivers")
 
         if self.cb_gpu.checkState():
             self.dic['cb_gpu'] = True
-            print("DEBUG:GPU drivers")
+            #print("DEBUG:GPU drivers")
 
         if self.cb_dropbox.checkState():
             self.dic['cb_dropbox'] = True
-            print("DEBUG:dropbox")
+            #print("DEBUG:dropbox")
 
         if self.cb_nextcloud.checkState():
             self.dic['cb_nextcloud'] = True
-            print("DEBUG:nextcloud")
+            #print("DEBUG:nextcloud")
 
         if self.cb_google.checkState():
             self.dic['cb_google'] = True
-            print("DEBUG:google")
+            #print("DEBUG:google")
 
         if self.cb_zoom.checkState():
             self.dic['cb_zoom'] = True
-            print("DEBUG:zoom")
+            #print("DEBUG:zoom")
 
         if self.cb_skype.checkState():
             self.dic['cb_skype'] = True
-            print("DEBUG:skype")
+            #print("DEBUG:skype")
 
         if self.cb_chrome.checkState():
             self.dic['cb_chrome'] = True
-            print("DEBUG:chrome")
+            #print("DEBUG:chrome")
 
         if self.cb_chromium.checkState():
             self.dic['cb_chromium'] = True
-            print("DEBUG:chromium")
+            #print("DEBUG:chromium")
     
     def start_installation(self):
         self.win_install = WindowInstall(self.dic)
