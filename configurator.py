@@ -6,13 +6,18 @@ from pathlib import Path
 from functools import partial
 from helper import *
 from config_installer import *
+from config_gui import *
 
 def main():
     facts = Facts()
     if not is_sudo():
         print("This script must be run as root") # replace with a QMessageBox not DEBUG
         sys.exit()
+
     collect_facts(facts)
+    app = QApplication(sys.argv)
+    win = MainWindow(facts)
+    sys.exit(app.exec_())
 
 def collect_facts(facts):
     facts.HOME = str(Path.home())
