@@ -55,7 +55,6 @@ class MainWindow(QWidget):
         self.btn = QPushButton("Start Install", self)
         vbox.addWidget(self.btn)
 
-        vbox.addLayout(vbox)
         vbox.addSpacing(30)
 
         self.setLayout(vbox)
