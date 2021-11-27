@@ -7,54 +7,45 @@ from functools import partial
 from PyQt5.QtWidgets import *
 from helper import *
 
-# global vars
-HOME = None
-OS = None
-PC = None
-DE = None
-GPU = None
-##############
-
 def main():
+    facts = Facts()
     if not is_sudo():
         print("This script must be run as root") # replace with a QMessageBox not DEBUG
         sys.exit()
 
-    HOME = str(Path.home())
+    facts.HOME = str(Path.home())
 
     # Determine the Distro and Desktop Enviroment #
     distro = os.popen("cat /etc/*release").read()
     if "fedora" in distro:
-        OS = "Fedora"
+        facts.OS = "Fedora"
         if "KDE" in distro:
-            DE = "KDE"
+            facts.DE = "KDE"
         else:
-            DE = "GNOME"
+            facts.DE = "GNOME"
     elif "ubuntu" in distro:
-        OS = "Ubuntu"
+        facts.OS = "Ubuntu"
         if "KDE" in distro:
-            DE = "KDE"
+            facts.DE = "KDE"
         else:
-            DE = "GNOME"
-
-
+            facts.DE = "GNOME"
 
     # Determine which GPU is in the PC #
     gpu = os.popen("lspci | grep VGA").read().lower()
     if "intel" in gpu:
-        GPU = "Intel"
+        facts.GPU = "Intel"
     elif "amd" in gpu:
-        GPU = "AMD"
+        facts.GPU = "AMD"
     elif "nvidia" in gpu:
-        GPU = "Nvidia"
+        facts.GPU = "Nvidia"
     else:
-        GPU = "Unknown"
+        facts.GPU = "Unknown"
 
     # Determine if the computer is PC or a Laptop #
     if not os.path.exists("/proc/acpi/button/lid"):
-        PC = "Desktop"
+        facts.PC = "Desktop"
     else:
-        PC = "Laptop"    
+        facts.PC = "Laptop"    
 
 
 
@@ -80,8 +71,8 @@ def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chrom
         print("DEBUG:chromium") # replace with install_chromium()
 
 
-def install_drivers():
-    if OS == "Fedora":
+def install_drivers(facts):
+    if facts.OS == "Fedora":
         dnf.upgrade()
         dnf.check()
         set_hostname("fedora") # By default my machine is called localhost; hence, I rename it for better accessability on the network.
@@ -126,7 +117,7 @@ def install_drivers():
         run_cmd("fwupdmgr get-updates")
         run_cmd("fwupdmgr update")
     
-    elif OS == "Ubuntu":
+    elif facts.OS == "Ubuntu":
         
         # Update system.
         apt.update()
@@ -196,22 +187,22 @@ def install_drivers():
         # Install Gnome Weather.
         apt.install("gnome-weather")
     
-    elif PC == "Laptop":
+    elif facts.PC == "Laptop":
         
-        if OS == "Fedora":
+        if facts.OS == "Fedora":
             # Reduce Battery Usage - TLP.
             dnf.install("tlp", "tlp-rdw")
             run_cmd("systemctl enable tlp")
             
-        if OS == "Ubuntu":
+        if facts.OS == "Ubuntu":
             run_cmd("add-apt-repository ppa:linuxuprising/apps") # -y ??
             run_cmd("apt-get update")
             run_cmd("apt-get install tlp tlpui")
             run_cmd("tlp start")
 
-def install_gpu():
+def install_gpu(facts):
 
-    if GPU == "Nvidia":
+    if facts.GPU == "Nvidia":
         run_cmd("modinfo -F version nvidia")
         dnf.install("akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
         dnf.install("xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
@@ -228,21 +219,21 @@ def install_gpu():
 
     #elif GPU == "Intel": Disable for now until we have installation process    
  
-def install_dropbox():
-    if OS == "Fedora":
+def install_dropbox(facts):
+    if facts.OS == "Fedora":
         dnf.install("dropbox", "nautilus-dropbox")
 
-    elif OS == "Ubuntu":
+    elif facts.OS == "Ubuntu":
         apt.install("nautilus-dropbox")
         
-def install_nextcloud():
-    if OS == "Fedora":
+def install_nextcloud(facts):
+    if facts.OS == "Fedora":
         dnf.install("nextcloud-client", "nextcloud-client-nautilus")
         run_cmd("-i")
         run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
         run_cmd("sysctl -p")
         
-    elif OS == "Ubuntu":
+    elif facts.OS == "Ubuntu":
         apt.install("nextcloud-desktop")
         
 
@@ -258,21 +249,21 @@ def install_skype():
 def install_zoom():    
     flatpak.install("zoom")
         
-def install_chrome():
-    if OS == "Fedora":
+def install_chrome(facts):
+    if facts.OS == "Fedora":
         dnf.install("fedora-workstation-repositories")
         dnf.config_manager("set-enabled", "google-chrome")
         dnf.install("google-chrome-stable")
         
-    elif OS == "Ubuntu":
+    elif facts.OS == "Ubuntu":
         download_file("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
         dpkg_install("google-chrome-stable_current_amd64.deb")
         
-def install_chromium():
-    if OS == "Fedora":
+def install_chromium(facts):
+    if facts.OS == "Fedora":
         dnf.install("chromium")
         
-    elif OS == "Ubuntu":
+    elif facts.OS == "Ubuntu":
         apt.install("chromium-browser")
 
 if __name__ == "__main__":
