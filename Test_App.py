@@ -4,6 +4,7 @@ from PyQt5.QtCore import QProcess
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import re
 import helper
@@ -74,7 +75,7 @@ def main():
         PC = "Laptop"    
 
 
-
+dic = {'cb_drivers':0, 'cb_gpu':0, 'cb_dropbox':0, 'cb_nextcloud':0, 'cb_google':0, 'cb_skype':0, 'cb_zoom':0, 'cb_chrome':0, 'cb_chromium':0}
 
 class Window2(QMainWindow):                           # <===
     #def __init__(self):
@@ -89,6 +90,7 @@ class Window2(QMainWindow):                           # <===
 
         #self.btn = QPushButton("Execute")
         #self.btn.pressed.connect(self.start_process)
+        print(dic)
         self.start_process
         self.text = QPlainTextEdit()
         self.text.setReadOnly(True)
@@ -150,6 +152,7 @@ class Window2(QMainWindow):                           # <===
    
 
 
+
 class MainWindow(QWidget):
 
     def __init__(self):
@@ -162,33 +165,52 @@ class MainWindow(QWidget):
     def initUI(self):
 
         vbox = QVBoxLayout()
+        
+        #infostr = f"You are runnig a {PC} PC \nYour system is {OS} {DE} with {GPU} GPU."
+        #self.label = QtWidgets.QLabel(self.centralwidget)
+        #self.label.setGeometry(QtCore.QRect(14, 80, 500, 20))
 
-        cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
-        cb_gpu = QCheckBox(f"Install {self.gpu} drivers", self)
-        cb_dropbox = QCheckBox('Install Dropbox')
-        cb_nextcloud = QCheckBox('Install NextCloud')
-        cb_google = QCheckBox('Install Google Cloud')
-        cb_skype = QCheckBox('Install Skype')
-        cb_zoom = QCheckBox('Install Zoom')
-        cb_chrome = QCheckBox('Install Chrome')
-        cb_chromium = QCheckBox('Install Chromium')
+        self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
+        vbox.addWidget(self.cb_drivers)
+        self.cb_drivers.setChecked(True)
+        self.cb_drivers.stateChanged.connect(self.checked)
+
+        self.cb_gpu = QCheckBox(f"Install {self.gpu} drivers", self)
+        vbox.addWidget(self.cb_gpu)
+        self.cb_gpu.stateChanged.connect(self.checked)
+        
+        self.cb_dropbox = QCheckBox('Install Dropbox')
+        vbox.addWidget(self.cb_dropbox)
+        self.cb_dropbox.stateChanged.connect(self.checked)
+        
+        self.cb_nextcloud = QCheckBox('Install NextCloud')
+        vbox.addWidget(self.cb_nextcloud)
+        self.cb_nextcloud.stateChanged.connect(self.checked)
+
+        self.cb_google = QCheckBox('Install Google Cloud')
+        vbox.addWidget(self.cb_google)
+        self.cb_google.stateChanged.connect(self.checked)
+        
+        self.cb_skype = QCheckBox('Install Skype')
+        vbox.addWidget(self.cb_skype)
+        self.cb_skype.stateChanged.connect(self.checked)
+        
+        self.cb_zoom = QCheckBox('Install Zoom')
+        vbox.addWidget(self.cb_zoom)
+        self.cb_zoom.stateChanged.connect(self.checked)
+        
+        self.cb_chrome = QCheckBox('Install Chrome')
+        vbox.addWidget(self.cb_chrome)
+        self.cb_chrome.stateChanged.connect(self.checked)
+        
+        self.cb_chromium = QCheckBox('Install Chromium')
+        vbox.addWidget(self.cb_chromium)
+        self.cb_chromium.stateChanged.connect(self.checked)
         
         #btn = QPushButton('Start Install')
-        btn = QPushButton("Start Install", self)
-
-        cb_drivers.setChecked(True)
-
-        vbox.addWidget(cb_drivers)
-        vbox.addWidget(cb_gpu)
-        vbox.addWidget(cb_dropbox)
-        vbox.addWidget(cb_nextcloud)
-        vbox.addWidget(cb_google)
-        vbox.addWidget(cb_skype)
-        vbox.addWidget(cb_zoom)
-        vbox.addWidget(cb_chrome)
-        vbox.addWidget(cb_chromium)
-        vbox.addWidget(btn)
-        
+        self.btn = QPushButton("Start Install", self)
+        vbox.addWidget(self.btn) 
+            
         #group.buttonClicked.connect(self.changeText)
 
         #self.label = QLabel('...', self)
@@ -203,12 +225,56 @@ class MainWindow(QWidget):
         self.setGeometry(400, 400, 400, 400)
         self.setWindowTitle('QCheckBox')
         self.show()
-        btn.clicked.connect(self.window2)
+        self.btn.clicked.connect(self.window2)
         #btn.clicked.connect(self.ProgressWindow)
+
+    def checked(self): 
+        """ If checked it change the value in the dictionery. 
+            In the second window the installer checks what it need to (install 1 = install / 0 = NOT install) """
+        
+        if self.cb_drivers.checkState():
+            dic['cb_drivers'] = 1
+            print("DEBUG:Drivers") # replace with install_drivers()
+
+        if self.cb_gpu.checkState():
+            dic['cb_gpu'] = 1
+            print("DEBUG:GPU drivers") # replace with install_gpu()
+
+        if self.cb_dropbox.checkState():
+            dic['cb_dropbox'] = 1
+            print("DEBUG:dropbox") # replace with install_dropbox()
+
+        if self.cb_nextcloud.checkState():
+            dic['cb_nextcloud'] = 1
+            print("DEBUG:nextcloud") # replace with install_nextcloud()
+
+        if self.cb_google.checkState():
+            dic['cb_google'] = 1
+            print("DEBUG:google") # replace with install_google()
+
+        if self.cb_zoom.checkState():
+            dic['cb_zoom'] = 1
+            print("DEBUG:zoom") # replace with install_zoom()
+
+        if self.cb_skype.checkState():
+            dic['cb_skype'] = 1
+            print("DEBUG:skype") # replace with install_skype()
+
+        if self.cb_chrome.checkState():
+            dic['cb_chrome'] = 1
+            print("DEBUG:chrome") # replace with install_chrome()
+
+        if self.cb_chromium.checkState():
+            dic['cb_chromium'] = 1
+            print("DEBUG:chromium") # replace with install_chromium()
+
+        
+
 
     def changeText(self, btn):
 
         self.label.setText(btn.text())
+    
 
     def window2(self):                                             # <===
         self.w = Window2()
@@ -404,5 +470,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
