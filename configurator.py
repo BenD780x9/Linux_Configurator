@@ -192,6 +192,9 @@ def install_drivers():
         apt.install("nautilus-admin")
         apt.install("caffeine") # A little helper in case my laptop needs to stay up all night
         
+        # Install JAVA.
+        apt.install('openjdk-14-jre')
+        
         # Install Codecs and VLC.
         apt.install("vlc")
         apt.install("libavcodec-extra", "libdvd-pkg")
