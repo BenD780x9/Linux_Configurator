@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import subprocess
 import sys
@@ -6,6 +8,9 @@ from pathlib import Path
 from functools import partial
 from PyQt5.QtWidgets import *
 from helper import *
+from logic.dnf import Dnf
+from logic.apt import Apt
+from logic.flatpak import Flatpak
 
 # global vars
 HOME = None
@@ -14,6 +19,7 @@ PC = None
 DE = None
 GPU = None
 ##############
+
 
 def main():
     if not is_sudo():
@@ -36,8 +42,6 @@ def main():
             DE = "KDE"
         else:
             DE = "GNOME"
-
-
 
     # Determine which GPU is in the PC #
     gpu = os.popen("lspci | grep VGA").read().lower()
@@ -124,85 +128,18 @@ def install(drivers, gpu, dropbox, nextcloud, google, zoom, skype, chrome, chrom
 
 def install_drivers():
     if OS == "Fedora":
-        dnf.upgrade()
-        dnf.check()
-        set_hostname("fedora") # By default my machine is called localhost; hence, I rename it for better accessability on the network.
+        Dnf.install_drivers()
 
-        
-        # Enable RPM Fusion
-        run_cmd("rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm")
-        run_cmd("rpm -Uvh http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm")
-        # Enable the RPM Fusion free and nonfree repositories.
-        dnf.group_update("core")
-        dnf.install("rpmfusion-free-release-tainted")
-        dnf.install("dnf-plugins-core")
-
-        # Enable Fastest Mirror Plugin.
-        run_cmd("echo 'fastestmirror=true' | tee -a /etc/dnf/dnf.conf")
-        run_cmd("echo 'max_parallel_downloads=20' | tee -a /etc/dnf/dnf.conf")
-        run_cmd("echo 'deltarpm=true' | tee -a /etc/dnf/dnf.conf")
-
-        # Install Flatpak, Snap and Fedy
-        flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
-        flatpak.update()
-        dnf.install("snapd")
-        run_cmd("ln -s /var/lib/snapd/snap /snap") # "sudo snap refresh" AFTER REBOOT # for classic snap support
-        dnf.do("copr enable kwizart/fedy")
-        dnf.install("fedy")
-        flatpak.install("flatseal")
-        
-        # Install Codecs and VLC.
-        dnf.install("vlc")
-        dnf.group_update("sound-and-video")
-        dnf.install("libdvdcss")
-        dnf.install("lame\*", "--exclude=lame-devel")
-        dnf.group("upgrade", "Multimedia", "--with-optional")
-        dnf.config_manager("set-enabled", "fedora-cisco-openh264")
-        dnf.install("gstreamer1-plugin-openh264", "mozilla-openh264")
-        
-        # Update disk drivers.
-        run_cmd("fwupdmgr refresh --force")
-        if "WARNING:" in subprocess.getoutput('fwupdmgr get-updates'):
-            print("DEBUG:true")
-            run_cmd("echo 'DisabledPlugins=test;invalid;uefi' | tee -a /etc/fwupd/daemon.conf") # Remove WARNING: Firmware can not be updated in legacy BIOS mode.
-        run_cmd("fwupdmgr get-updates")
-        run_cmd("fwupdmgr update")
-    
     elif OS == "Ubuntu":
         
         # Update system.
-        apt.update()
-        apt.upgrade()
-        apt.dist_upgrade()
-        apt.autoremove()
-        apt.autoclean()
-        
-        # Update disk drivers.
-        run_cmd("fwupdmgr get-devices")
-        run_cmd("fwupdmgr get-updates")
-        run_cmd("fwupdmgr update")
-        # run_cmd("reboot now") # Nedds to save STATE if enable reboot.
-        
-        # System Utilities.
-        apt.install("snapd")
-        apt.install("flatpak")
-        flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
-        flatpak.update()
-        flatpak.install("flatseal") # Tool to check or change the permissions of your flatpaks
-        apt.install("nautilus-admin")
-        apt.install("caffeine") # A little helper in case my laptop needs to stay up all night
-        
-        # Install Codecs and VLC.
-        apt.install("vlc")
-        apt.install("libavcodec-extra", "libdvd-pkg")
-        run_cmd("dpkg-reconfigure libdvd-pkg")
-        
-      
+        Apt.install_drivers()
+
     elif PC == "Laptop":
         
         if OS == "Fedora":
             # Reduce Battery Usage - TLP.
-            dnf.install("tlp", "tlp-rdw")
+            Dnf.install("tlp", "tlp-rdw")
             run_cmd("systemctl enable tlp")
             
         if OS == "Ubuntu":
@@ -211,15 +148,16 @@ def install_drivers():
             run_cmd("apt-get install tlp tlpui")
             run_cmd("tlp start")
 
+
 def install_gpu():
 
     if GPU == "Nvidia":
         run_cmd("modinfo -F version nvidia")
-        dnf.install("akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
-        dnf.install("xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
-        dnf.install("xorg-x11-drv-nvidia-cuda-libs")
-        dnf.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
-        dnf.install("vulkan")
+        Dnf.install("akmod-nvidia") # rhel/centos users can use kmod-nvidia instead
+        Dnf.install("xorg-x11-drv-nvidia-cuda") #optional for cuda/nvdec/nvenc support
+        Dnf.install("xorg-x11-drv-nvidia-cuda-libs")
+        Dnf.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
+        Dnf.install("vulkan")
         run_cmd("modinfo -F version nvidia")
     
     #elif GPU == "AMD": # Disable for now until we have installation process
@@ -229,53 +167,60 @@ def install_gpu():
         #run_cmd('Section "Device"\n\tIdentifier "AMD"\n\tDriver "amdgpu"\nEndSection" > /etc/X11/xorg.conf.d/20-amdgpu.conf') 
 
     #elif GPU == "Intel": Disable for now until we have installation process    
- 
+
+
 def install_dropbox():
     if OS == "Fedora":
-        dnf.install("dropbox", "nautilus-dropbox")
+        Dnf.install("dropbox", "nautilus-dropbox")
 
     elif OS == "Ubuntu":
-        apt.install("nautilus-dropbox")
-        
+        Apt.install("nautilus-dropbox")
+
+
 def install_nextcloud():
     if OS == "Fedora":
-        dnf.install("nextcloud-client", "nextcloud-client-nautilus")
+        Dnf.install("nextcloud-client", "nextcloud-client-nautilus")
         run_cmd("-i")
         run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
         run_cmd("sysctl -p")
         
     elif OS == "Ubuntu":
-        apt.install("nextcloud-desktop")
+        Apt.install("nextcloud-desktop")
         
 
 def install_google():
-    dnf.install("python3-devel", "python3-pip", "python3-inotify", "python3-gobject", "cairo-devel", "cairo-gobject-devel", "libappindicator-gtk3")
+    Dnf.install("python3-devel", "python3-pip", "python3-inotify", "python3-gobject", "cairo-devel", "cairo-gobject-devel", "libappindicator-gtk3")
     run_cmd("python3 -m pip install --upgrade google-api-python-client")
     run_cmd("python3 -m pip install --upgrade oauth2client")
     run_cmd("yum install -y overgrive-3.3.*.noarch.rpm")
 
+
 def install_skype():
-    flatpak.install("skype")
+    Flatpak.install("skype")
+
 
 def install_zoom():    
-    flatpak.install("zoom")
+    Flatpak.install("zoom")
         
+
 def install_chrome():
     if OS == "Fedora":
-        dnf.install("fedora-workstation-repositories")
-        dnf.config_manager("set-enabled", "google-chrome")
-        dnf.install("google-chrome-stable")
+        Dnf.install("fedora-workstation-repositories")
+        Dnf.config_manager("set-enabled", "google-chrome")
+        Dnf.install("google-chrome-stable")
         
     elif OS == "Ubuntu":
         download_file("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
         dpkg_install("google-chrome-stable_current_amd64.deb")
         
+
 def install_chromium():
     if OS == "Fedora":
-        dnf.install("chromium")
+        Dnf.install("chromium")
         
     elif OS == "Ubuntu":
-        apt.install("chromium-browser")
+        Apt.install("chromium-browser")
+
 
 if __name__ == "__main__":
     main()
