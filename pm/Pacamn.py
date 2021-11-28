@@ -1,0 +1,2 @@
+class Pacman:
+    pass
