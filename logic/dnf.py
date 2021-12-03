@@ -45,12 +45,6 @@ class Dnf:
 
     @staticmethod
     def install_drivers():
-        Dnf.upgrade()
-        Dnf.check()
-        helper.set_hostname(
-            "fedora")  # By default my machine is called localhost; hence, I rename it for better accessability on the network.
-
-        # Enable RPM Fusion
         helper.run_cmd(
             "rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm")
         helper.run_cmd(
@@ -91,3 +85,59 @@ class Dnf:
                 "echo 'DisabledPlugins=test;invalid;uefi' | tee -a /etc/fwupd/daemon.conf")  # Remove WARNING: Firmware can not be updated in legacy BIOS mode.
         helper.run_cmd("fwupdmgr get-updates")
         helper.run_cmd("fwupdmgr update")
+
+    @staticmethod
+    def config_gnome():
+        # Enable “Click to Minimize”.
+        helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'")
+
+        # Move ‘Show Applications’ (9 dots icon) to the top.
+        helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true")
+
+        # Shorten the panel to make it compact.
+        helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false")
+
+        # Move dock to the bottom, though you may do it via System Settings.
+        helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM")
+
+        # Enable Gnome Extensions Support.
+        Dnf.install("chrome-gnome-shell", "gnome-shell-extension-prefs", "gnome-tweaks")
+
+        # Install Gnome Weather.
+        Dnf.install("gnome-weather")
+
+    @staticmethod
+    def config_laptop():
+        # Reduce Battery Usage - TLP.
+        Dnf.install("tlp", "tlp-rdw")
+        helper.run_cmd("systemctl enable tlp")
+
+    @staticmethod
+    def install_gpu(gpu):
+        if gpu == "Nvidia":
+            helper.run_cmd("modinfo -F version nvidia")
+            Dnf.install("akmod-nvidia")  # rhel/centos users can use kmod-nvidia instead
+            Dnf.install("xorg-x11-drv-nvidia-cuda")  # optional for cuda/nvdec/nvenc support
+            Dnf.install("xorg-x11-drv-nvidia-cuda-libs")
+            Dnf.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
+            Dnf.install("vulkan")
+            helper.run_cmd("modinfo -F version nvidia")
+
+    @staticmethod
+    def install_dropbox():
+        Dnf.install("dropbox", "nautilus-dropbox")
+
+    @staticmethod
+    def install_nextcloud():
+        Dnf.install("nextcloud-client", "nextcloud-client-nautilus")
+        helper.run_cmd("-i")
+        helper.run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
+        helper.run_cmd("sysctl -p")
+
+    @staticmethod
+    def install_google():
+        Dnf.install("python3-devel", "python3-pip", "python3-inotify", "python3-gobject", "cairo-devel",
+                    "cairo-gobject-devel", "libappindicator-gtk3")
+        helper.run_cmd("python3 -m pip install --upgrade google-api-python-client")
+        helper.run_cmd("python3 -m pip install --upgrade oauth2client")
+        helper.run_cmd("yum install -y overgrive-3.3.*.noarch.rpm")
