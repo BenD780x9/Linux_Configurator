@@ -61,7 +61,7 @@ class Apt:
 
         # Enable Firewall.
         run_cmd("ufw enable")
-        Apt.install("apt-get install gufw")
+        Apt.install("gufw")
 
         # Install JAVA.
         Apt.install('openjdk-14-jre')
@@ -80,8 +80,8 @@ class Apt:
 
         # Install Ubuntu Cleaner
         run_cmd("add-apt-repository ppa:gerardpuig/ppa")
-        run_cmd("apt-get update")
-        run_cmd("apt-get install ubuntu-cleaner")
+        Apt.update()
+        Apt.install("ubuntu-cleaner")
 
     @staticmethod
     def config_gnome():
@@ -106,16 +106,18 @@ class Apt:
     @staticmethod
     def config_laptop():
         run_cmd("add-apt-repository ppa:linuxuprising/apps")  # -y ??
-        run_cmd("apt-get update")
-        run_cmd("apt-get install tlp tlpui")
+        Apt.update()
+        Apt.install("tlp", "tlpui")
         run_cmd("tlp start")
 
     @staticmethod
     def install_gpu(gpu):
         if gpu == "Nvidia":
             run_cmd("modinfo -F version nvidia")
-            Apt.install("akmod-nvidia")  # rhel/centos users can use kmod-nvidia instead
-            Apt.install("xorg-x11-drv-nvidia-cuda")  # optional for cuda/nvdec/nvenc support
+            # rhel/centos users can use kmod-nvidia instead
+            Apt.install("akmod-nvidia")
+            # optional for cuda/nvdec/nvenc support
+            Apt.install("xorg-x11-drv-nvidia-cuda")
             Apt.install("xorg-x11-drv-nvidia-cuda-libs")
             Apt.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
             Apt.install("vulkan")

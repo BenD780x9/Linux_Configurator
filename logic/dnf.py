@@ -7,7 +7,7 @@ from logic.flatpak import Flatpak
 class Dnf:
     @staticmethod
     def do(cmd):
-        """run an unimplemented command"""
+        """run the command"""
         helper.run_cmd(f"dnf {cmd}")
 
     @staticmethod
@@ -116,8 +116,10 @@ class Dnf:
     def install_gpu(gpu):
         if gpu == "Nvidia":
             helper.run_cmd("modinfo -F version nvidia")
-            Dnf.install("akmod-nvidia")  # rhel/centos users can use kmod-nvidia instead
-            Dnf.install("xorg-x11-drv-nvidia-cuda")  # optional for cuda/nvdec/nvenc support
+            # rhel/centos users can use kmod-nvidia instead
+            Dnf.install("akmod-nvidia")
+            # optional for cuda/nvdec/nvenc support
+            Dnf.install("xorg-x11-drv-nvidia-cuda")
             Dnf.install("xorg-x11-drv-nvidia-cuda-libs")
             Dnf.install("vdpauinfo", "libva-vdpau-driver", "libva-utils")
             Dnf.install("vulkan")
@@ -140,4 +142,4 @@ class Dnf:
                     "cairo-gobject-devel", "libappindicator-gtk3")
         helper.run_cmd("python3 -m pip install --upgrade google-api-python-client")
         helper.run_cmd("python3 -m pip install --upgrade oauth2client")
-        helper.run_cmd("yum install -y overgrive-3.3.*.noarch.rpm")
+        Dnf.install("overgrive-3.3.*.noarch.rpm")
