@@ -1,0 +1,7 @@
+{
+    "chromium": {
+        "description": "some web browser",
+        "commands": ["apt-get update", "apt install chromium"],
+        "high_privilege": true
+    }
+}
