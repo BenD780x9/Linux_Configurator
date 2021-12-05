@@ -86,3 +86,11 @@ class apt:
         for arg in args:
             cmd += " " + arg
         do(cmd)
+
+class Facts:
+    def __init__(self):
+        self.HOME = None
+        self.OS = None
+        self.PC = None
+        self.DE = None
+        self.GPU = None
