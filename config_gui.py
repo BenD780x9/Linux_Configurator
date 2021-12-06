@@ -3,7 +3,9 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QProcess
 from helper import *
-
+import time
+from PyQt5.QtCore import QThread, pyqtSignal
+import sys
 
 class MainWindow(QWidget):
     def __init__(self, facts):
@@ -122,68 +124,49 @@ class MainWindow(QWidget):
             self.dic['cb_chromium'] = False
 
     def start_installation(self):
-        self.win_install = WindowInstall(self.dic)
+        self.win_install = Example()
         self.win_install.show()
         self.hide()
 
 
-class WindowInstall(QMainWindow):
-    def __init__(self, dic):
-        super().__init__()
+class WindowInstall(QThread):
 
-        print(dic)
-        self.start_process
-        self.text = QPlainTextEdit()
-        self.text.setReadOnly(True)
+    _signal = pyqtSignal(int)
+    def __init__(self):
+        super(WindowInstall, self).__init__()
 
-        self.progress = QProgressBar()
-        self.progress.setRange(0, 100)
+    def __del__(self):
+        self.wait()
 
-        l = QVBoxLayout()
-        l.addWidget(self.progress)
-        l.addWidget(self.text)
+    def run(self):
+        for i in range(100):
+            time.sleep(0.1)
+            self._signal.emit(i)
 
-        w = QWidget()
-        w.setLayout(l)
+class Example(QWidget):
+    def __init__(self):
+        super(Example, self).__init__()
+        self.setWindowTitle('QProgressBar')
+        self.btn = QPushButton('Click me')
+        self.btn.clicked.connect(self.btnFunc)
+        self.pbar = QProgressBar(self)
+        self.pbar.setValue(0)
+        self.resize(300, 100)
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.pbar)
+        self.vbox.addWidget(self.btn)
+        self.setLayout(self.vbox)
+        self.show()
 
-        self.setCentralWidget(w)
+    def btnFunc(self):
+        self.WindowInstall = WindowInstall()
+        self.WindowInstall._signal.connect(self.signal_accept)
+        self.WindowInstall.start()
+        self.btn.setEnabled(False)
 
-    def message(self, s):
-        self.text.appendPlainText(s)
-
-    def start_process(self):
-        self.message("Executing process")
-        self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
-        self.p.readyReadStandardOutput.connect(self.handle_stdout)
-        self.p.readyReadStandardError.connect(self.handle_stderr)
-        self.p.stateChanged.connect(self.handle_state)
-        self.p.finished.connect(self.process_finished)  # Clean up once complete.
-        self.p.start("python3", ['dummy_script.py'])
-
-    def handle_stderr(self):
-        data = self.p.readAllStandardError()
-        stderr = bytes(data).decode("utf8")
-
-        # Extract progress if it is in the data.
-        progress = simple_percent_parser(stderr)
-        if progress:
-            self.progress.setValue(progress)
-        self.message(stderr)
-
-    def handle_stdout(self):
-        data = self.p.readAllStandardOutput()
-        stdout = bytes(data).decode("utf8")
-        self.message(stdout)
-
-    def handle_state(self, state):
-        states = {
-            QProcess.NotRunning: 'Not running',
-            QProcess.Starting: 'Starting',
-            QProcess.Running: 'Running',
-        }
-        state_name = states[state]
-        self.message(f"State changed: {state_name}")
-
-    def process_finished(self):
-        self.message("Process finished.")
-        self.p = None
+    def signal_accept(self, msg):
+        self.pbar.setValue(int(msg))
+        if self.pbar.value() == 99:
+            sys.exit()
+            #self.pbar.setValue(0)
+            #self.btn.setEnabled(True)
