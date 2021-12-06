@@ -124,7 +124,7 @@ class MainWindow(QWidget):
             self.dic['cb_chromium'] = False
 
     def start_installation(self):
-        self.win_install = Example()
+        self.win_install = Installer()
         self.win_install.show()
         self.hide()
 
@@ -143,9 +143,9 @@ class WindowInstall(QThread):
             time.sleep(0.1)
             self._signal.emit(i)
 
-class Example(QWidget):
+class Installer(QWidget):
     def __init__(self):
-        super(Example, self).__init__()
+        super(Installer, self).__init__()
         self.setWindowTitle('EZLinux')
         self.btn = QPushButton('Click me')
         self.btn.clicked.connect(self.btnFunc)
