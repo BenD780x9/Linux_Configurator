@@ -55,9 +55,13 @@ class Apt:
         Apt.install("flatpak")
         Flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
         Flatpak.update()
-        Flatpak.install("flatseal")  # Tool to check or change the permissions of your flatpaks
+
+        # Tool to check or change the permissions of your flatpaks
+        Flatpak.install("flatseal")
         Apt.install("nautilus-admin")
-        Apt.install("caffeine")  # A little helper in case my laptop needs to stay up all night
+
+        # A little helper in case my laptop needs to stay up all night
+        Apt.install("caffeine")
 
         # Enable Firewall.
         run_cmd("ufw enable")
@@ -114,8 +118,10 @@ class Apt:
     def install_gpu(gpu):
         if gpu == "Nvidia":
             run_cmd("modinfo -F version nvidia")
+
             # rhel/centos users can use kmod-nvidia instead
             Apt.install("akmod-nvidia")
+
             # optional for cuda/nvdec/nvenc support
             Apt.install("xorg-x11-drv-nvidia-cuda")
             Apt.install("xorg-x11-drv-nvidia-cuda-libs")
