@@ -71,7 +71,7 @@ class MainWindow(QWidget):
 
         self.move(300, 300)
         self.setGeometry(400, 400, 400, 400)
-        self.setWindowTitle('QCheckBox')
+        self.setWindowTitle('EZLinux')
         self.show()
 
     def checked(self): 
@@ -146,7 +146,7 @@ class WindowInstall(QThread):
 class Example(QWidget):
     def __init__(self):
         super(Example, self).__init__()
-        self.setWindowTitle('QProgressBar')
+        self.setWindowTitle('EZLinux')
         self.btn = QPushButton('Click me')
         self.btn.clicked.connect(self.btnFunc)
         self.pbar = QProgressBar(self)
