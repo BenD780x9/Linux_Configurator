@@ -151,7 +151,7 @@ class Example(QWidget):
         self.btn.clicked.connect(self.btnFunc)
         self.pbar = QProgressBar(self)
         self.pbar.setValue(0)
-        self.resize(300, 100)
+        self.resize(350, 100)
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.pbar)
         self.vbox.addWidget(self.btn)
