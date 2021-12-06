@@ -32,8 +32,10 @@ class MainWindow(QWidget):
     def initUI(self):
         vbox = QVBoxLayout()
         
+        vbox.addSpacing(10)
         vbox.addWidget(self.label)
         
+        vbox.addSpacing(10)
         vbox.addWidget(self.cb_drivers)
         self.cb_drivers.setChecked(True)
         self.cb_drivers.stateChanged.connect(self.checked)
@@ -62,6 +64,7 @@ class MainWindow(QWidget):
         vbox.addWidget(self.cb_chromium)
         self.cb_chromium.stateChanged.connect(self.checked)
         
+        vbox.addSpacing(30)
         vbox.addWidget(self.btn)
         self.btn.clicked.connect(self.start_installation)
 
@@ -146,27 +149,33 @@ class WindowInstall(QThread):
 class Installer(QWidget):
     def __init__(self):
         super(Installer, self).__init__()
+        self.label = QtWidgets.QLabel("Install (THAT) package")
         self.setWindowTitle('EZLinux')
-        self.btn = QPushButton('Click me')
-        self.btn.clicked.connect(self.btnFunc)
         self.pbar = QProgressBar(self)
         self.pbar.setValue(0)
         self.resize(350, 100)
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.pbar)
-        self.vbox.addWidget(self.btn)
         self.setLayout(self.vbox)
-        self.show()
 
-    def btnFunc(self):
+        self.vbox.addWidget(self.label)
+        self.show()
         self.WindowInstall = WindowInstall()
         self.WindowInstall._signal.connect(self.signal_accept)
         self.WindowInstall.start()
-        self.btn.setEnabled(False)
+
+    """ Here if we want to work with in the future """
+    # def btnFunc(self):
+    #     self.WindowInstall = WindowInstall()
+    #     self.WindowInstall._signal.connect(self.signal_accept)
+    #     self.WindowInstall.start()
+    #     self.btn.setEnabled(False)
 
     def signal_accept(self, msg):
         self.pbar.setValue(int(msg))
         if self.pbar.value() == 99:
             sys.exit()
+
+            """ Here if we need a push button in the progress bar """
             #self.pbar.setValue(0)
             #self.btn.setEnabled(True)
