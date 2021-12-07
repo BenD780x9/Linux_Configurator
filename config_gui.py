@@ -7,13 +7,15 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import sys
 
+dic = {'cb_drivers': True, 'cb_gpu': False, 'cb_dropbox': False, 'cb_nextcloud': False,
+                    'cb_google': False, 'cb_skype': False, 'cb_zoom': False, 'cb_chrome': False,
+                    'cb_chromium': False}
+                    
 class MainWindow(QWidget):
     def __init__(self, facts):
         super().__init__()
         self.facts = facts
-        self.dic = {'cb_drivers': False, 'cb_gpu': False, 'cb_dropbox': False, 'cb_nextcloud': False,
-                    'cb_google': False, 'cb_skype': False, 'cb_zoom': False, 'cb_chrome': False,
-                    'cb_chromium': False}
+        self.dic = dic
         self.label = QtWidgets.QLabel(f"You are running a {self.facts.PC} PC \nYour package manager is "
                                       f"{self.facts.package_manager.__class__.__name__} with {self.facts.GPU} GPU.\n\n"
                                       f"Choose what to install:")
@@ -128,9 +130,9 @@ class MainWindow(QWidget):
 
     def start_installation(self):
         self.win_install = Installer()
-        
-        """ONLY for testing"""
-        print(self.dic) 
+
+        #"""ONLY for testing"""
+        #print(self.dic) 
 
         self.win_install.show()
         self.hide()
@@ -153,16 +155,27 @@ class WindowInstall(QThread):
 class Installer(QWidget):
     def __init__(self):
         super(Installer, self).__init__()
+        self.dic = dic
+        
+        """ ONLY for testing """
+        #print(self.dic) 
+        install_packages = [key for key, value in self.dic.items() if value == True]
+        print(install_packages)
+        progress = int(100 / len(install_packages))
+
+        # Window
         self.label = QtWidgets.QLabel("Install {Message} package")
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
-        self.pbar.setValue(0)
+        self.pbar.setValue(progress)
         self.resize(350, 100)
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.pbar)
         self.setLayout(self.vbox)
-
         self.vbox.addWidget(self.label)
+
+        
+
         self.show()
         self.WindowInstall = WindowInstall()
         self.WindowInstall._signal.connect(self.signal_accept)
