@@ -128,6 +128,10 @@ class MainWindow(QWidget):
 
     def start_installation(self):
         self.win_install = Installer()
+        
+        """ONLY for testing"""
+        print(self.dic) 
+
         self.win_install.show()
         self.hide()
 
