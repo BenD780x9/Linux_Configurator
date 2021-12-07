@@ -37,6 +37,8 @@ class Apt:
 
     @staticmethod
     def install_drivers():
+        
+        Message = print("Intsalling drivers...")
         # Update system.
         Apt.update()
         Apt.upgrade()
@@ -51,6 +53,7 @@ class Apt:
         # run_cmd("reboot now") # Nedds to save STATE if enable reboot.
 
         # System Utilities.
+        Message = print("installing System Utilities")
         Apt.install("snapd")
         Apt.install("flatpak")
         Flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
@@ -71,6 +74,7 @@ class Apt:
         Apt.install('openjdk-14-jre')
 
         # Install Codecs and VLC.
+        Message = print("Installing Codecs and VLC")
         Apt.install("libavcodec-extra", "libdvd-pkg", "ubuntu-restricted-extras", "ubuntu-restricted-addons")
         Apt.install("vlc")
         Apt.install("ubuntu-restricted-extras", "libdvdnav4", "gstreamer1.0-plugins-bad", "gstreamer1.0-plugins-ugly",
@@ -82,30 +86,11 @@ class Apt:
         run_cmd("apt update")
         Apt.install("pulseaudio-modules-bt", "libldac")
 
-        # Install Ubuntu Cleaner
+        # Install Ubuntu Cleaner.
+        Message = print("Installing Ubuntu Cleaner")
         run_cmd("add-apt-repository ppa:gerardpuig/ppa")
         Apt.update()
         Apt.install("ubuntu-cleaner")
-
-    @staticmethod
-    def config_gnome():
-        # Enable “Click to Minimize”.
-        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'")
-
-        # Move ‘Show Applications’ (9 dots icon) to the top.
-        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true")
-
-        # Shorten the panel to make it compact.
-        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false")
-
-        # Move dock to the bottom, though you may do it via System Settings.
-        run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM")
-
-        # Enable Gnome Extensions Support.
-        Apt.install("chrome-gnome-shell", "gnome-shell-extension-prefs", "gnome-tweaks")
-
-        # Install Gnome Weather.
-        Apt.install("gnome-weather")
 
     @staticmethod
     def config_laptop():

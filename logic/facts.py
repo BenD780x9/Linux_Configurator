@@ -11,6 +11,7 @@ class Facts:
         self.PC = None
         self.DE = None
         self.GPU = None
+        self.OS = None
         self.package_manager = None
 
     def collect_facts(self):
@@ -19,8 +20,10 @@ class Facts:
         # Determine the Distro and Desktop Enviroment #
         distro = os.popen("cat /etc/*release").read()
         if "fedora" in distro:
+            self.OS = "Fedora"
             self.package_manager = Dnf()
         elif "ubuntu" in distro:
+            self.OS = "Ubuntu"
             self.package_manager = Apt()
 
         if "KDE" in distro:

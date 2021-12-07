@@ -149,7 +149,7 @@ class WindowInstall(QThread):
 class Installer(QWidget):
     def __init__(self):
         super(Installer, self).__init__()
-        self.label = QtWidgets.QLabel("Install (THAT) package")
+        self.label = QtWidgets.QLabel("Install {Message} package")
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
         self.pbar.setValue(0)
