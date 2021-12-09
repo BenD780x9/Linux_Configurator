@@ -3,70 +3,62 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QProcess
 from helper import *
-import time
-from PyQt5.QtCore import QThread, pyqtSignal
-import sys
+import re
 
-dic = {'cb_drivers': True, 'cb_gpu': False, 'cb_dropbox': False, 'cb_nextcloud': False,
-                    'cb_google': False, 'cb_skype': False, 'cb_zoom': False, 'cb_chrome': False,
-                    'cb_chromium': False}
-                    
+from logic.facts import Facts
+from logic.apt import Apt
+
 class MainWindow(QWidget):
-    def __init__(self, facts):
+    def __init__(self, facts:Facts):
         super().__init__()
         self.facts = facts
-        self.dic = dic
-        self.label = QtWidgets.QLabel(f"You are running a {self.facts.PC} PC \nYour package manager is "
-                                      f"{self.facts.package_manager.__class__.__name__} with {self.facts.GPU} GPU.\n\n"
-                                      f"Choose what to install:")
-        self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
-        self.cb_gpu = QCheckBox(f"Install {self.facts.GPU} drivers", self)
-        self.cb_dropbox = QCheckBox('Install Dropbox')
-        self.cb_nextcloud = QCheckBox('Install NextCloud')
-        self.cb_google = QCheckBox('Install Google Cloud')
-        self.cb_skype = QCheckBox('Install Skype')
-        self.cb_zoom = QCheckBox('Install Zoom')
-        self.cb_chrome = QCheckBox('Install Chrome')
-        self.cb_chromium = QCheckBox('Install Chromium')
-        self.btn = QPushButton("Start Install", self)
+        self.dic = {'cb_drivers':False, 'cb_gpu':False, 'cb_dropbox':False, 'cb_nextcloud':False, 'cb_google':False, 'cb_skype':False, 'cb_zoom':False, 'cb_chrome':False, 'cb_chromium':False}
         self.initUI()
 
     def initUI(self):
         vbox = QVBoxLayout()
         
-        vbox.addSpacing(10)
+        self.label = QtWidgets.QLabel(f"You are runnig a {self.facts.PC} PC \nYour system is {self.facts.OS} with {self.facts.GPU} GPU.\n\nChoose what to install:")
         vbox.addWidget(self.label)
         
-        vbox.addSpacing(10)
+        self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
         vbox.addWidget(self.cb_drivers)
         self.cb_drivers.setChecked(True)
         self.cb_drivers.stateChanged.connect(self.checked)
 
+        self.cb_gpu = QCheckBox(f"Install {self.facts.GPU} drivers", self)
         vbox.addWidget(self.cb_gpu)
         self.cb_gpu.stateChanged.connect(self.checked)
         
+        self.cb_dropbox = QCheckBox('Install Dropbox')
         vbox.addWidget(self.cb_dropbox)
         self.cb_dropbox.stateChanged.connect(self.checked)
         
+        self.cb_nextcloud = QCheckBox('Install NextCloud')
         vbox.addWidget(self.cb_nextcloud)
         self.cb_nextcloud.stateChanged.connect(self.checked)
 
+        self.cb_google = QCheckBox('Install Google Cloud')
         vbox.addWidget(self.cb_google)
         self.cb_google.stateChanged.connect(self.checked)
         
+        self.cb_skype = QCheckBox('Install Skype')
         vbox.addWidget(self.cb_skype)
         self.cb_skype.stateChanged.connect(self.checked)
         
+        self.cb_zoom = QCheckBox('Install Zoom')
         vbox.addWidget(self.cb_zoom)
         self.cb_zoom.stateChanged.connect(self.checked)
         
+        self.cb_chrome = QCheckBox('Install Chrome')
         vbox.addWidget(self.cb_chrome)
         self.cb_chrome.stateChanged.connect(self.checked)
         
+        self.cb_chromium = QCheckBox('Install Chromium')
         vbox.addWidget(self.cb_chromium)
         self.cb_chromium.stateChanged.connect(self.checked)
         
-        vbox.addSpacing(30)
+        self.btn = QPushButton("Start Install", self)
         vbox.addWidget(self.btn)
         self.btn.clicked.connect(self.start_installation)
 
@@ -76,123 +68,138 @@ class MainWindow(QWidget):
 
         self.move(300, 300)
         self.setGeometry(400, 400, 400, 400)
-        self.setWindowTitle('EZLinux')
+        self.setWindowTitle('QCheckBox')
         self.show()
 
     def checked(self): 
-        """ If checked it change the value in the dictionary.
+        """ If checked it change the value in the dictionery. 
             In the second window the installer checks what it need to (install True = install / False = NOT install) """
         
         if self.cb_drivers.checkState():
             self.dic['cb_drivers'] = True
-        else:
-            self.dic['cb_drivers'] = False
+            #print("DEBUG:Drivers")
 
         if self.cb_gpu.checkState():
             self.dic['cb_gpu'] = True
-        else:
-            self.dic['cb_gpu'] = False
+            #print("DEBUG:GPU drivers")
 
         if self.cb_dropbox.checkState():
             self.dic['cb_dropbox'] = True
-        else:
-            self.dic['cb_dropbox'] = False
+            #print("DEBUG:dropbox")
 
         if self.cb_nextcloud.checkState():
             self.dic['cb_nextcloud'] = True
-        else:
-            self.dic['cb_nextcloud'] = False
+            #print("DEBUG:nextcloud")
 
         if self.cb_google.checkState():
             self.dic['cb_google'] = True
-        else:
-            self.dic['cb_google'] = False
+            #print("DEBUG:google")
 
         if self.cb_zoom.checkState():
             self.dic['cb_zoom'] = True
-        else:
-            self.dic['cb_zoom'] = False
+            #print("DEBUG:zoom")
 
         if self.cb_skype.checkState():
             self.dic['cb_skype'] = True
-        else:
-            self.dic['cb_skype'] = False
+            #print("DEBUG:skype")
 
         if self.cb_chrome.checkState():
             self.dic['cb_chrome'] = True
-        else:
-            self.dic['cb_chrome'] = False
+            #print("DEBUG:chrome")
 
         if self.cb_chromium.checkState():
             self.dic['cb_chromium'] = True
-        else:
-            self.dic['cb_chromium'] = False
-
+            #print("DEBUG:chromium")
+    
     def start_installation(self):
-        self.win_install = Installer()
-
-        #"""ONLY for testing"""
-        #print(self.dic) 
-
+        self.win_install = WindowInstall(self.dic, self.facts)
         self.win_install.show()
         self.hide()
 
 
-class WindowInstall(QThread):
+class WindowInstall(QMainWindow):
+    def __init__(self, dic, facts):
+        super().__init__()
 
-    _signal = pyqtSignal(int)
-    def __init__(self):
-        super(WindowInstall, self).__init__()
+        print(dic)
+        self.facts = facts
+        self.text = QPlainTextEdit()
+        self.text.setReadOnly(True)
+        self.start_process()
 
-    def __del__(self):
-        self.wait()
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 100)
 
-    def run(self):
-        for i in range(100):
-            time.sleep(0.1)
-            self._signal.emit(i)
+        l = QVBoxLayout()
+        #l.addWidget(self.btn)
+        l.addWidget(self.progress)
+        l.addWidget(self.text)
 
-class Installer(QWidget):
-    def __init__(self):
-        super(Installer, self).__init__()
-        self.dic = dic
+        w = QWidget()
+        w.setLayout(l)
+
+        self.setCentralWidget(w)
+        self.setMinimumWidth(600)
+
+    def message(self, s):
+        self.text.appendPlainText(s)
+
+    def start_process(self):
+        #if self.p is None:  # No process running.
+        self.message("Executing process")
+        self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
+        self.p.readyReadStandardOutput.connect(self.handle_stdout)
+        self.p.readyReadStandardError.connect(self.handle_stderr)
+        self.p.stateChanged.connect(self.handle_state)
+        self.p.finished.connect(self.process_finished)  # Clean up once complete.
+        #self.p.start(install_func)
+        self.p.start("python3", ['dummy_script.py'])
+        #self.p.start("bash", ['ls'])
+
+    def simple_percent_parser(self, io):
+        if type(self.facts.package_manager) is Apt:
+            matches = re.findall("(?:^|\n|\r|(?:Do you want to continue? \[Y\/n] ))\(?((?:\S| \S)+) ?\.\.\.(?: ?(\d+)%)?", io)
+            activity = None
+            progress = None
+            matches.reverse()
+            for groups in matches:
+                if activity is None:
+                    activity = groups[0]
+                progress = groups[1] if len(groups) >=2 else None
+                if progress is not None and progress != '':
+                    return activity, int(progress)
+            return activity, None
+        return None, None
+
+    def handle_stderr(self):
+        data = self.p.readAllStandardError()
+        stderr = bytes(data).decode("utf8")
+
         
-        """ ONLY for testing """
-        #print(self.dic) 
-        install_packages = [key for key, value in self.dic.items() if value == True]
-        print(install_packages)
-        progress = int(100 / len(install_packages))
+        self.message(stderr)
 
-        # Window
-        self.label = QtWidgets.QLabel("Install {Message} package")
-        self.setWindowTitle('EZLinux')
-        self.pbar = QProgressBar(self)
-        self.pbar.setValue(progress)
-        self.resize(350, 100)
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.pbar)
-        self.setLayout(self.vbox)
-        self.vbox.addWidget(self.label)
-
+    def handle_stdout(self):
+        data = self.p.readAllStandardOutput()
+        stdout = bytes(data).decode("utf8")
         
+        # Extract progress if it is in the data.
+        activity, progress = self.simple_percent_parser(stdout)
+        if activity:
+            self.setWindowTitle(activity)
+        if progress:
+            self.progress.setValue(progress)
+        self.message(stdout)
 
-        self.show()
-        self.WindowInstall = WindowInstall()
-        self.WindowInstall._signal.connect(self.signal_accept)
-        self.WindowInstall.start()
+    def handle_state(self, state):
+        states = {
+            QProcess.NotRunning: 'Not running',
+            QProcess.Starting: 'Starting',
+            QProcess.Running: 'Running',
+        }
+        state_name = states[state]
+        self.setWindowTitle(state_name)
+        self.message(f"State changed: {state_name}")
 
-    """ Here if we want to work with in the future """
-    # def btnFunc(self):
-    #     self.WindowInstall = WindowInstall()
-    #     self.WindowInstall._signal.connect(self.signal_accept)
-    #     self.WindowInstall.start()
-    #     self.btn.setEnabled(False)
-
-    def signal_accept(self, msg):
-        self.pbar.setValue(int(msg))
-        if self.pbar.value() == 99:
-            sys.exit()
-
-            """ Here if we need a push button in the progress bar """
-            #self.pbar.setValue(0)
-            #self.btn.setEnabled(True)
+    def process_finished(self):
+        self.message("Process finished.")
+        self.p = None
