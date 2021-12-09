@@ -1,4 +1,4 @@
-# Linux_Configurator
+# EZLinux - Linux_Configurator
 
 # To Do:
   1. Fix progress bar (installation with name of the package that installing).
