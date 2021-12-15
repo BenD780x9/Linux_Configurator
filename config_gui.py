@@ -9,6 +9,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import sys
 from logic.apt import Message
 from functools import partial
+import logic
 
 dic = {'install_drivers': True, 'install_gpu': False, 'install_dropbox': False, 'install_nextcloud': False,
                     'install_google': False, 'install_skype': False, 'install_zoom': False, 'install_chrome': False,
@@ -170,7 +171,7 @@ class InstallWindow(QWidget):
         self.d = {}
         for package in self.install_packages:
             if self.progress <= 100:
-                l = f"{self.facts.package_manager.__class__.__name__}.{package}()"
+                l = f"logic.{self.facts.package_manager.__class__.__name__}.{package}()"
                 self.d[l] = self.progress
                 self.progress = self.progress + self.prog
 
@@ -217,7 +218,10 @@ class InstallWindow(QWidget):
         for key in self.d:        
             #sys.stdout.write(key)
             #num = self.d[key]
-            print(key) 
+            #print(key)
+            logic.dnf.Dnf.install_dropbox()
+            logic.dnf.Dnf.install_nextcloud()
+
             for i in range( i, self.d[key] ):
                 time.sleep(0.1)
                 self.pbar.setValue(i)
