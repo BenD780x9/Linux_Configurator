@@ -217,7 +217,7 @@ class InstallWindow(QWidget):
         for key in self.d:        
             #sys.stdout.write(key)
             #num = self.d[key]
-            key 
+            print(key) 
             for i in range( i, self.d[key] ):
                 time.sleep(0.1)
                 self.pbar.setValue(i)
@@ -227,6 +227,7 @@ class InstallWindow(QWidget):
                     if i >= 99:
                         sys.exit()
 
+            
                 print(i)
                     
 
