@@ -1,3 +1,4 @@
+from typing import Generator
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -6,18 +7,20 @@ from helper import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import sys
+from logic.apt import Message
+from functools import partial
 
-dic = {'cb_drivers': True, 'cb_gpu': False, 'cb_dropbox': False, 'cb_nextcloud': False,
-                    'cb_google': False, 'cb_skype': False, 'cb_zoom': False, 'cb_chrome': False,
-                    'cb_chromium': False}
-                    
+dic = {'install_drivers': True, 'install_gpu': False, 'install_dropbox': False, 'install_nextcloud': False,
+                    'install_google': False, 'install_skype': False, 'install_zoom': False, 'install_chrome': False,
+                    'install_chromium': False}           
+
 class MainWindow(QWidget):
     def __init__(self, facts):
         super().__init__()
         self.facts = facts
         self.dic = dic
-        self.label = QtWidgets.QLabel(f"You are running a {self.facts.PC} PC \nYour package manager is "
-                                      f"{self.facts.package_manager.__class__.__name__} with {self.facts.GPU} GPU.\n\n"
+        self.label = QtWidgets.QLabel(f"You are running a {self.facts.PC} PC.\nYour system is "
+                                      f"{self.facts.OS} {self.facts.DE} with {self.facts.GPU} GPU.\n\n"
                                       f"Choose what to install:")
         self.cb_drivers = QCheckBox("Install System configs and Drivers   (Recommended)", self)
         self.cb_gpu = QCheckBox(f"Install {self.facts.GPU} drivers", self)
@@ -68,7 +71,7 @@ class MainWindow(QWidget):
         
         vbox.addSpacing(30)
         vbox.addWidget(self.btn)
-        self.btn.clicked.connect(self.start_installation)
+        self.btn.clicked.connect(partial(self.start_installation, self.facts))
 
         vbox.addSpacing(30)
 
@@ -84,52 +87,52 @@ class MainWindow(QWidget):
             In the second window the installer checks what it need to (install True = install / False = NOT install) """
         
         if self.cb_drivers.checkState():
-            self.dic['cb_drivers'] = True
+            self.dic['install_drivers'] = True
         else:
-            self.dic['cb_drivers'] = False
+            self.dic['install_drivers'] = False
 
         if self.cb_gpu.checkState():
-            self.dic['cb_gpu'] = True
+            self.dic['install_gpu'] = True
         else:
-            self.dic['cb_gpu'] = False
+            self.dic['install_gpu'] = False
 
         if self.cb_dropbox.checkState():
-            self.dic['cb_dropbox'] = True
+            self.dic['install_dropbox'] = True
         else:
-            self.dic['cb_dropbox'] = False
+            self.dic['install_dropbox'] = False
 
         if self.cb_nextcloud.checkState():
-            self.dic['cb_nextcloud'] = True
+            self.dic['install_nextcloud'] = True
         else:
-            self.dic['cb_nextcloud'] = False
+            self.dic['install_nextcloud'] = False
 
         if self.cb_google.checkState():
-            self.dic['cb_google'] = True
+            self.dic['install_google'] = True
         else:
-            self.dic['cb_google'] = False
+            self.dic['install_google'] = False
 
         if self.cb_zoom.checkState():
-            self.dic['cb_zoom'] = True
+            self.dic['install_zoom'] = True
         else:
-            self.dic['cb_zoom'] = False
+            self.dic['install_zoom'] = False
 
         if self.cb_skype.checkState():
-            self.dic['cb_skype'] = True
+            self.dic['install_skype'] = True
         else:
-            self.dic['cb_skype'] = False
+            self.dic['install_skype'] = False
 
         if self.cb_chrome.checkState():
-            self.dic['cb_chrome'] = True
+            self.dic['install_chrome'] = True
         else:
-            self.dic['cb_chrome'] = False
+            self.dic['install_chrome'] = False
 
         if self.cb_chromium.checkState():
-            self.dic['cb_chromium'] = True
+            self.dic['install_chromium'] = True
         else:
-            self.dic['cb_chromium'] = False
+            self.dic['install_chromium'] = False
 
-    def start_installation(self):
-        self.win_install = Installer()
+    def start_installation(self, facts):
+        self.win_install = Installer(facts)
 
         #"""ONLY for testing"""
         #print(self.dic) 
@@ -153,33 +156,53 @@ class WindowInstall(QThread):
             self._signal.emit(i)
 
 class Installer(QWidget):
-    def __init__(self):
+    def __init__(self, facts):
         super(Installer, self).__init__()
-        self.dic = dic
-        
-        """ ONLY for testing """
-        #print(self.dic) 
-        install_packages = [key for key, value in self.dic.items() if value == True]
-        print(install_packages)
-        progress = int(100 / len(install_packages))
 
+        self.facts = facts
+        self.dic = dic
+        self.Message = Message
+        self.install_packages = [key for key, value in self.dic.items() if value == True]
+        
+        
+                
+        self.progress = int(100 / len(self.install_packages))
+        self.first = range(0, self.progress)
+        self.prog = self.progress
+  
+        self.d = {}
+        for package in self.install_packages:
+            if self.progress <= 100:
+                l = f"{self.facts.package_manager.__class__.__name__}.{package}()"
+                self.d[l] = self.progress
+                self.progress = self.progress + self.prog
+
+        #print(self.d)
+        #print(self.facts.PC)
+        #print(f"{len(self.install_packages)} items")
+        #print(f"{self.prog} %")
+        #self.i = 0
+              
+      
         # Window
-        self.label = QtWidgets.QLabel("Install {Message} package")
+        self.label = QtWidgets.QLabel(f"Install {self.Message} package")
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
-        self.pbar.setValue(progress)
+        #self.pbar.setValue(0) # 'progress' value
         self.resize(350, 100)
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.pbar)
         self.setLayout(self.vbox)
         self.vbox.addWidget(self.label)
+       
 
         
-
         self.show()
         self.WindowInstall = WindowInstall()
         self.WindowInstall._signal.connect(self.signal_accept)
         self.WindowInstall.start()
+        
+        
 
     """ Here if we want to work with in the future """
     # def btnFunc(self):
@@ -189,10 +212,19 @@ class Installer(QWidget):
     #     self.btn.setEnabled(False)
 
     def signal_accept(self, msg):
-        self.pbar.setValue(int(msg))
-        if self.pbar.value() == 99:
-            sys.exit()
+        self.pbar.setValue(0)
+        for key in self.d:        
+            #sys.stdout.write(key)
+            #num = self.d[key]
+            key 
+        for i in range( self.d[key] ):
+                self.pbar.setValue(i)
+                time.sleep(0.1)
+                if i == self.d[key]:
+                    i == self.d[key]
+                    print(i)
 
-            """ Here if we need a push button in the progress bar """
+        #     sys.exit()
+    """ Here if we need a push button in the progress bar """
             #self.pbar.setValue(0)
             #self.btn.setEnabled(True)

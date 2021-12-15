@@ -47,14 +47,14 @@ class Dnf:
     @staticmethod
     def install_drivers():
 
-        sys.stdout.write("Installing Drivers...")
+        Message = print("Installing Drivers...")
         helper.run_cmd(
             "rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm")
         helper.run_cmd(
             "rpm -Uvh http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm")
 
         # Enable the RPM Fusion free and nonfree repositories.
-        sys.stdout.write("Config system")
+        Message = print("Config system")
         Dnf.group_update("core")
         Dnf.install("rpmfusion-free-release-tainted")
         Dnf.install("dnf-plugins-core")
@@ -65,7 +65,7 @@ class Dnf:
         helper.run_cmd("echo 'deltarpm=true' | tee -a /etc/dnf/dnf.conf")
 
         # Install Flatpak, Snap and Fedy.
-        sys.stdout.write("Installing System Utilities")
+        Message = print("Installing System Utilities")
         Flatpak.remote_add("flathub", "https://flathub.org/repo/flathub.flatpakrepo", "--if-not-exists")
         Flatpak.update()
         Dnf.install("snapd")
@@ -75,7 +75,7 @@ class Dnf:
         Flatpak.install("flatseal")
 
         # Install Codecs and VLC.
-        sys.stdout.write("Codecs and VLC")
+        Message = print("Codecs and VLC")
         Dnf.install("vlc")
         Dnf.group_update("sound-and-video")
         Dnf.install("libdvdcss")
@@ -85,7 +85,7 @@ class Dnf:
         Dnf.install("gstreamer1-plugin-openh264", "mozilla-openh264")
 
         # Update disk drivers.
-        sys.stdout.write("Update disk drivers")
+        Message = print("Update disk drivers")
         helper.run_cmd("fwupdmgr refresh --force")
         if "WARNING:" in subprocess.getoutput('fwupdmgr get-updates'):
             print("DEBUG:true")
@@ -97,14 +97,14 @@ class Dnf:
     @staticmethod
     def config_laptop():
         # Reduce Battery Usage - TLP.
-        sys.stdout.write("config Laptop stuff")
+        Message = print("config Laptop stuff")
         Dnf.install("tlp", "tlp-rdw")
         helper.run_cmd("systemctl enable tlp")
 
     @staticmethod
     def install_gpu(gpu):
 
-        sys.stdout.write("Installing GPU drivers")
+        Message = print("Installing GPU drivers")
 
         if gpu == "Nvidia":
             Message = print("Installing Nvidia drivers")
@@ -124,12 +124,12 @@ class Dnf:
 
     @staticmethod
     def install_dropbox():
-        sys.stdout.write("Installing DropBox")
+        Message = print("Installing DropBox")
         Dnf.install("dropbox", "nautilus-dropbox")
 
     @staticmethod
     def install_nextcloud():
-        sys.stdout.write("Installing NextCloud")
+        Message = print("Installing NextCloud")
         Dnf.install("nextcloud-client", "nextcloud-client-nautilus")
         helper.run_cmd("-i")
         helper.run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
@@ -137,7 +137,7 @@ class Dnf:
 
     @staticmethod
     def install_google():
-        sys.stdout.write("Intsalling Google")
+        Message = print("Intsalling Google")
         Dnf.install("python3-devel", "python3-pip", "python3-inotify", "python3-gobject", "cairo-devel",
                     "cairo-gobject-devel", "libappindicator-gtk3")
         helper.run_cmd("python3 -m pip install --upgrade google-api-python-client")
