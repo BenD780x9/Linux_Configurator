@@ -132,20 +132,17 @@ class MainWindow(QWidget):
             self.dic['install_chromium'] = False
 
     def start_installation(self, facts):
-        self.win_install = Installer(facts)
-
-        #"""ONLY for testing"""
-        #print(self.dic) 
+        self.win_install = InstallWindow(facts)
 
         self.win_install.show()
         self.hide()
 
 
-class WindowInstall(QThread):
+class Installer(QThread):
 
     _signal = pyqtSignal(int)
     def __init__(self):
-        super(WindowInstall, self).__init__()
+        super(Installer, self).__init__()
 
     def __del__(self):
         self.wait()
@@ -155,9 +152,9 @@ class WindowInstall(QThread):
             time.sleep(0.1)
             self._signal.emit(i)
 
-class Installer(QWidget):
+class InstallWindow(QWidget):
     def __init__(self, facts):
-        super(Installer, self).__init__()
+        super(InstallWindow, self).__init__()
 
         self.facts = facts
         self.dic = dic
@@ -198,34 +195,10 @@ class Installer(QWidget):
 
         
         self.show()
-        self.WindowInstall = WindowInstall()
-        self.WindowInstall._signal.connect(self.signal_accept)
-        self.WindowInstall.start()
-        
-        
+        self.installer = Installer()
+        self.installer._signal.connect(self.signal_accept)
+        self.installer.start()
 
-    """ Here if we want to work with in the future """
-    # def btnFunc(self):
-    #     self.WindowInstall = WindowInstall()
-    #     self.WindowInstall._signal.connect(self.signal_accept)
-    #     self.WindowInstall.start()
-    #     self.btn.setEnabled(False)
 
-    def signal_accept(self, msg):
-        self.pbar.setValue(0)
-        for key in self.d:        
-            #sys.stdout.write(key)
-            #num = self.d[key]
-            key 
-        for i in range( self.d[key] ):
-                self.pbar.setValue(i)
-                time.sleep(0.1)
-                if i == self.d[key]:
-                    i == self.d[key]
-                    print(i)
-                    
-
-        #     sys.exit()
-    """ Here if we need a push button in the progress bar """
-            #self.pbar.setValue(0)
-            #self.btn.setEnabled(True)
+    def signal_accept(self, value):
+        self.pbar.setValue(value)
