@@ -223,6 +223,7 @@ class Installer(QWidget):
                 if i == self.d[key]:
                     i == self.d[key]
                     print(i)
+                    
 
         #     sys.exit()
     """ Here if we need a push button in the progress bar """
