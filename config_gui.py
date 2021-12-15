@@ -200,5 +200,38 @@ class InstallWindow(QWidget):
         self.installer.start()
 
 
+<<<<<<< HEAD
     def signal_accept(self, value):
         self.pbar.setValue(value)
+=======
+    """ Here if we want to work with in the future """
+    # def btnFunc(self):
+    #     self.WindowInstall = WindowInstall()
+    #     self.WindowInstall._signal.connect(self.signal_accept)
+    #     self.WindowInstall.start()
+    #     self.btn.setEnabled(False)
+
+    def signal_accept(self, msg):
+        #self.pbar.setValue(0)
+        i = 0
+        for key in self.d:        
+            #sys.stdout.write(key)
+            #num = self.d[key]
+            key 
+            for i in range( i, self.d[key] ):
+                time.sleep(0.1)
+                self.pbar.setValue(i)
+                if i == self.d[key] - 1:
+                    i = self.d[key]
+                    print(i)
+                    if i >= 99:
+                        sys.exit()
+
+                print(i)
+                    
+
+        #     sys.exit()
+    """ Here if we need a push button in the progress bar """
+            #self.pbar.setValue(0)
+            #self.btn.setEnabled(True)
+>>>>>>> 35dc23c (solve pbar)
