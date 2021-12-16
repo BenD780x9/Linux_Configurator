@@ -171,15 +171,17 @@ class InstallWindow(QWidget):
         self.d = {}
         for package in self.install_packages:
             if self.progress <= 100:
-                l = f"logic.{self.facts.package_manager.__class__.__name__}.{package}()"
+                l = f"logic.{str.lower(self.facts.package_manager.__class__.__name__)}.{self.facts.package_manager.__class__.__name__}.{package}()"
                 self.d[l] = self.progress
                 self.progress = self.progress + self.prog
 
+        """ ONLY for testing """
         #print(self.d)
         #print(self.facts.PC)
-        #print(f"{len(self.install_packages)} items")
-        #print(f"{self.prog} %")
-        #self.i = 0
+        # print(f"{len(self.install_packages)} items")
+        # print(f"{self.prog} %")
+        # print(self.prog * len(self.install_packages))
+        
               
       
         # Window
@@ -213,24 +215,20 @@ class InstallWindow(QWidget):
     #     self.btn.setEnabled(False)
 
     def signal_accept(self, msg):
-        #self.pbar.setValue(0)
         i = 0
         for key in self.d:        
             #sys.stdout.write(key)
-            #num = self.d[key]
-            #print(key)
-            logic.dnf.Dnf.install_dropbox()
-            logic.dnf.Dnf.install_nextcloud()
-
+            print(key)
+            key
+            #logic.dnf.Dnf.install_dropbox()
             for i in range( i, self.d[key] ):
                 time.sleep(0.1)
                 self.pbar.setValue(i)
                 if i == self.d[key] - 1:
                     i = self.d[key]
                     print(i)
-                    if i >= 99:
-                        sys.exit()
-
+                    if i == (len(self.install_packages) * self.prog):
+                        sys.exit() 
             
                 print(i)
                     
