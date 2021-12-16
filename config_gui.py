@@ -225,7 +225,8 @@ class InstallWindow(QWidget):
                     i = self.d[key]
                     print(i)
                     if i == (len(self.install_packages) * self.prog):
-                        sys.exit() 
+                        sys.exit()
+                        """ Reboot system after installation done """
             
                 print(i)
 
