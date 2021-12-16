@@ -216,11 +216,8 @@ class InstallWindow(QWidget):
 
     def signal_accept(self, msg):
         i = 0
-        for key in self.d:        
-            #sys.stdout.write(key)
-            print(key)
-            key
-            #logic.dnf.Dnf.install_dropbox()
+        for key in self.d:                  
+            exec(key)
             for i in range( i, self.d[key] ):
                 time.sleep(0.1)
                 self.pbar.setValue(i)
@@ -231,9 +228,7 @@ class InstallWindow(QWidget):
                         sys.exit() 
             
                 print(i)
-                    
 
-        #     sys.exit()
     """ Here if we need a push button in the progress bar """
             #self.pbar.setValue(0)
             #self.btn.setEnabled(True)
