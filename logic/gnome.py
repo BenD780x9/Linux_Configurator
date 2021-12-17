@@ -22,6 +22,7 @@ def config_gnome():
     helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM")
 
     if Facts.OS == "Fedora":
+        
         # Enable Gnome Extensions Support.
         dnf.Dnf.install("chrome-gnome-shell", "gnome-shell-extension-prefs", "gnome-tweaks")
 
