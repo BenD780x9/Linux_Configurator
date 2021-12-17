@@ -124,16 +124,16 @@ class Dnf:
 
     @staticmethod
     def install_dropbox():
-        Message = print("Installing DropBox")
-        Dnf.install("dropbox", "nautilus-dropbox")
+        print("Installing DropBox")
+        # Dnf.install("dropbox", "nautilus-dropbox")
 
     @staticmethod
     def install_nextcloud():
-        Message = print("Installing NextCloud")
-        Dnf.install("nextcloud-client", "nextcloud-client-nautilus")
-        helper.run_cmd("-i")
-        helper.run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
-        helper.run_cmd("sysctl -p")
+        print("Installing NextCloud")
+        # Dnf.install("nextcloud-client", "nextcloud-client-nautilus")
+        # helper.run_cmd("-i")
+        # helper.run_cmd("echo 'fs.inotify.max_user_watches = 524288' >> /etc/sysctl.conf")
+        # helper.run_cmd("sysctl -p")
 
     @staticmethod
     def install_google():
