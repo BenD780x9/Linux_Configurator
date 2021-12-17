@@ -8,7 +8,7 @@ from facts import Facts
 def config_gnome():
 
     print("Configure Gnome")
-    
+
     # Enable “Click to Minimize”.
     helper.run_cmd("gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'")
 
