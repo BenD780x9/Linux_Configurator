@@ -215,19 +215,21 @@ class InstallWindow(QWidget):
     #     self.btn.setEnabled(False)
 
     def signal_accept(self, msg):
-        i = 0
-        for key in self.d:                  
-            exec(key)
-            for i in range( i, self.d[key] ):
-                time.sleep(0.1)
-                self.pbar.setValue(i)
-                if i == self.d[key] - 1:
-                    i = self.d[key]
-                    print(i)
-                    if i == (len(self.install_packages) * self.prog):
-                        sys.exit()
+            i = 0
+        
+            while True:                
+                for key in self.d:
+                    exec(key)
+                    for i in range( i, self.d[key] ):
+                        time.sleep(0.1)
+                        self.pbar.setValue(i)
+                        if i == self.d[key] - 1:
+                            i = self.d[key]
+                            print(i)
+                            if i == (len(self.install_packages) * self.prog):
+                                sys.exit()
                         """ Reboot system after installation done """
-            
+                
                 print(i)
 
     """ Here if we need a push button in the progress bar """
