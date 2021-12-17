@@ -159,11 +159,10 @@ class InstallWindow(QWidget):
 
         self.facts = facts
         self.dic = dic
-        self.Message = Message
-        self.install_packages = [key for key, value in self.dic.items() if value == True]
-        
-        
-                
+        self.Message = Message # For messages in "self.label"
+        self.install_packages = [key for key, value in self.dic.items() if value == True] # Chck which installation needs to start.
+          
+        # Progress for pbar
         self.progress = int(100 / len(self.install_packages))
         self.first = range(0, self.progress)
         self.prog = self.progress
@@ -171,6 +170,7 @@ class InstallWindow(QWidget):
         self.d = {}
         for package in self.install_packages:
             if self.progress <= 100:
+                # Changes the format for installation script.
                 l = f"logic.{str.lower(self.facts.package_manager.__class__.__name__)}.{self.facts.package_manager.__class__.__name__}.{package}()"
                 self.d[l] = self.progress
                 self.progress = self.progress + self.prog
@@ -185,7 +185,7 @@ class InstallWindow(QWidget):
               
       
         # Window
-        self.label = QtWidgets.QLabel(f"Install {self.Message} package")
+        self.label = QtWidgets.QLabel(f"Install {l} package") # PUT the name of the package currenly being installing. 
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
         #self.pbar.setValue(0) # 'progress' value
@@ -194,14 +194,11 @@ class InstallWindow(QWidget):
         self.vbox.addWidget(self.pbar)
         self.setLayout(self.vbox)
         self.vbox.addWidget(self.label)
-       
-
-        
+            
         self.show()
         self.installer = Installer()
         self.installer._signal.connect(self.signal_accept)
         self.installer.start()
-
 
 
     def signal_accept(self, value):
@@ -216,20 +213,22 @@ class InstallWindow(QWidget):
 
     def signal_accept(self, msg):
             i = 0
-        
+            drivers = f"{self.facts.package_manager.__class__.__name__}.{self.facts.package_manager.__class__.__name__}.install_drivers()"
             while True:                
-                for key in self.d:
+                for key in self.d: # List with pckages to install.
                     exec(key)
-                    for i in range( i, self.d[key] ):
+                    for i in range( i, self.d[key] ): # Set value for pbar.
                         time.sleep(0.1)
                         self.pbar.setValue(i)
                         if i == self.d[key] - 1:
                             i = self.d[key]
                             print(i)
-                            if i == (len(self.install_packages) * self.prog):
-                                sys.exit()
-                        """ Reboot system after installation done """
-                
+                            if i == (len(self.install_packages) * self.prog): # Exit if Pbar in done.  
+                                if drivers not in self.d: # No need to restart if drivers not installed.
+                                    sys.exit()
+                                else:
+                                    sys.exit()
+                                    # Add reboot after drivers installation.
                 print(i)
 
     """ Here if we need a push button in the progress bar """
