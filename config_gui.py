@@ -10,6 +10,7 @@ import sys
 from logic.apt import Message
 from functools import partial
 import logic
+import os
 
 dic = {'install_drivers': True, 'install_gpu': False, 'install_dropbox': False, 'install_nextcloud': False,
                     'install_google': False, 'install_skype': False, 'install_zoom': False, 'install_chrome': False,
@@ -159,7 +160,6 @@ class InstallWindow(QWidget):
 
         self.facts = facts
         self.dic = dic
-        self.Message = Message # For messages in "self.label"
         self.install_packages = [key for key, value in self.dic.items() if value == True] # Chck which installation needs to start.
           
         # Progress for pbar
@@ -185,7 +185,8 @@ class InstallWindow(QWidget):
               
       
         # Window
-        self.label = QtWidgets.QLabel(f"Install {l} package") # PUT the name of the package currenly being installing. 
+        self.Message = "" # For messages in "self.label"
+        self.label = QtWidgets.QLabel(f"Install {self.Message} package") # PUT the name of the package currenly being installing. 
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
         #self.pbar.setValue(0) # 'progress' value
@@ -201,36 +202,33 @@ class InstallWindow(QWidget):
         self.installer.start()
 
 
-    def signal_accept(self, value):
-        self.pbar.setValue(value)
-
     """ Here if we want to work with in the future """
     # def btnFunc(self):
     #     self.WindowInstall = WindowInstall()
     #     self.WindowInstall._signal.connect(self.signal_accept)
     #     self.WindowInstall.start()
     #     self.btn.setEnabled(False)
-
-    def signal_accept(self, msg):
+    
+    def signal_accept(self):
             i = 0
             drivers = f"{self.facts.package_manager.__class__.__name__}.{self.facts.package_manager.__class__.__name__}.install_drivers()"
             while True:                
                 for key in self.d: # List with pckages to install.
-                    exec(key)
+                    exec(key)            
                     for i in range( i, self.d[key] ): # Set value for pbar.
                         time.sleep(0.1)
                         self.pbar.setValue(i)
                         if i == self.d[key] - 1:
                             i = self.d[key]
                             print(i)
+                            self.Message = key
                             if i == (len(self.install_packages) * self.prog): # Exit if Pbar in done.  
                                 if drivers not in self.d: # No need to restart if drivers not installed.
                                     sys.exit()
                                 else:
+                                    os.system("sudo reboot")
                                     sys.exit()
-                                    # Add reboot after drivers installation.
-                print(i)
-
+                               
     """ Here if we need a push button in the progress bar """
             #self.pbar.setValue(0)
             #self.btn.setEnabled(True)
