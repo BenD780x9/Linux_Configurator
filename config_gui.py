@@ -224,7 +224,7 @@ class InstallWindow(QWidget):
                         if i == self.d[key] - 1:
                             i = self.d[key]
                             print(i)
-                            #self.Message = key
+                            self.Message = key
                             if i == (len(self.install_packages) * self.prog): # Exit if Pbar in done.  
                                 if drivers not in self.d: # No need to restart if drivers not installed.
                                     sys.exit()
