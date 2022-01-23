@@ -10,7 +10,9 @@ elif [  $OS = "ubuntu" ] ; then
 # is a single "=" even though bash supports "=="
 # alternativly use #!/bin/bash
 # consider changing the fedora comparison
-    echo "Add ubuntu install script"
+    sudo apt update
+    sudo apt -y upgrade
+    sudo apt install python3 python3-pip
 fi
 
 pip3 install -r requirements.txt
