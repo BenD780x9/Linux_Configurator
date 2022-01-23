@@ -12,7 +12,7 @@ elif [  $OS = "ubuntu" ] ; then
 # consider changing the fedora comparison
     sudo apt update
     sudo apt -y upgrade
-    sudo apt install python3 python3-pip
+    sudo apt install -y python3 python3-pip
 fi
 
 pip3 install -r requirements.txt
