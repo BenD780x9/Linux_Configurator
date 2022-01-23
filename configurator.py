@@ -10,14 +10,14 @@ def main():
     facts = Facts()
 
     """ Disable ONLY for testing """
-    if not is_sudo():
-        print("This script must be run as root")
-        app = QApplication(sys.argv)
-        msg = QMessageBox.critical(None,
-                                  "RootError",
-                                  "This script must be run as root",
-                                  QMessageBox.Ok)
-        sys.exit()
+    # if not is_sudo():
+    #     print("This script must be run as root")
+    #     app = QApplication(sys.argv)
+    #     msg = QMessageBox.critical(None,
+    #                               "RootError",
+    #                               "This script must be run as root",
+    #                               QMessageBox.Ok)
+    #     sys.exit()
 
     facts.collect_facts()
     app = QApplication(sys.argv)

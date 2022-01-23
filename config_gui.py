@@ -155,6 +155,7 @@ class Installer(QThread):
             self._signal.emit(i)
 
 class InstallWindow(QWidget):
+    Message = None # For messages in "self.label"
     def __init__(self, facts):
         super(InstallWindow, self).__init__()
 
@@ -185,7 +186,7 @@ class InstallWindow(QWidget):
               
       
         # Window
-        self.Message = "" # For messages in "self.label"
+        #self.Message = Message
         self.label = QtWidgets.QLabel(f"Install {self.Message} package") # PUT the name of the package currenly being installing. 
         self.setWindowTitle('EZLinux')
         self.pbar = QProgressBar(self)
@@ -214,21 +215,24 @@ class InstallWindow(QWidget):
             drivers = f"{self.facts.package_manager.__class__.__name__}.{self.facts.package_manager.__class__.__name__}.install_drivers()"
             while True:                
                 for key in self.d: # List with pckages to install.
-                    exec(key)            
+                    exec(key)
+                    self.Message = key
+                    print(self.Message)
                     for i in range( i, self.d[key] ): # Set value for pbar.
                         time.sleep(0.1)
                         self.pbar.setValue(i)
                         if i == self.d[key] - 1:
                             i = self.d[key]
                             print(i)
-                            self.Message = key
+                            #self.Message = key
                             if i == (len(self.install_packages) * self.prog): # Exit if Pbar in done.  
                                 if drivers not in self.d: # No need to restart if drivers not installed.
                                     sys.exit()
                                 else:
                                     os.system("sudo reboot")
                                     sys.exit()
-                               
+            return self.Message
+                         
     """ Here if we need a push button in the progress bar """
             #self.pbar.setValue(0)
             #self.btn.setEnabled(True)
