@@ -10,6 +10,10 @@ elif [  $OS = "ubuntu" ] ; then
 # is a single "=" even though bash supports "=="
 # alternativly use #!/bin/bash
 # consider changing the fedora comparison
+""" 
+Ubuntu still broken.
+Need to fix QT5.
+"""
     sudo apt update
     sudo apt -y upgrade
     sudo apt install -y python3 python3-pip
