@@ -55,11 +55,12 @@ class Dnf:
 
         # Enable the RPM Fusion free and nonfree repositories.
         Message = print("Config system")
-        Dnf.group_update("core")
+       #Dnf.group_update("core") Need to check why it not intalling...
         Dnf.install("rpmfusion-free-release-tainted")
         Dnf.install("dnf-plugins-core")
 
         # Enable Fastest Mirror Plugin.
+        Message = print("Configure Mirrors")
         helper.run_cmd("echo 'fastestmirror=true' | tee -a /etc/dnf/dnf.conf")
         helper.run_cmd("echo 'max_parallel_downloads=20' | tee -a /etc/dnf/dnf.conf")
         helper.run_cmd("echo 'deltarpm=true' | tee -a /etc/dnf/dnf.conf")
@@ -70,17 +71,17 @@ class Dnf:
         Flatpak.update()
         Dnf.install("snapd")
         helper.run_cmd("ln -s /var/lib/snapd/snap /snap")  # "sudo snap refresh" AFTER REBOOT # for classic snap support
-        Dnf.do("copr enable kwizart/fedy")
+        #Dnf.do("copr enable kwizart/fedy") Need to check why it not intalling...
         Dnf.install("fedy")
-        Flatpak.install("flatseal")
+        Flatpak.install("com.github.tchx84.Flatseal")
 
         # Install Codecs and VLC.
         Message = print("Codecs and VLC")
         Dnf.install("vlc")
         Dnf.group_update("sound-and-video")
         Dnf.install("libdvdcss")
-        Dnf.install("lame\*", "--exclude=lame-devel")
-        Dnf.group("upgrade", "Multimedia", "--with-optional")
+        #Dnf.install("lame\*", "--exclude=lame-devel") Need to check why it not intalling...
+        #Dnf.group("upgrade", "Multimedia", "--with-optional") Need to check why it not intalling...
         Dnf.config_manager("set-enabled", "fedora-cisco-openh264")
         Dnf.install("gstreamer1-plugin-openh264", "mozilla-openh264")
 
